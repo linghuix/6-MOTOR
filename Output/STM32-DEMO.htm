@@ -3,7 +3,7 @@
 <title>Static Call Graph - [..\Output\STM32-DEMO.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image ..\Output\STM32-DEMO.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Mon Jul 22 22:22:33 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Jul 24 16:32:53 2019
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -290,7 +290,7 @@ Global Symbols
 <P><STRONG><a name="[a]"></a>WWDG_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f10x_hd.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 232 bytes, Stack size 0 bytes, main.o(.text))
+<P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 264 bytes, Stack size 0 bytes, main.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_Config
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIME_NVIC_Configuration
 <LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIME2_Configuration
@@ -340,6 +340,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SDO_Write
+<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SDO_Read
 </UL>
 
 <P><STRONG><a name="[52]"></a>Epos_Delay</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, epos.o(.text))
@@ -386,11 +387,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[57]"></a>SDO_Read</STRONG> (Thumb, 306 bytes, Stack size 0 bytes, epos.o(.text))
+<P><STRONG><a name="[57]"></a>SDO_Read</STRONG> (Thumb, 354 bytes, Stack size 0 bytes, epos.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_SetMsg
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Receive
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_MessagePending
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_FIFORelease
+<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Print
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SDO_Read
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Epos_Delay
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
@@ -408,12 +410,12 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_SetMsg
 </UL>
 
-<P><STRONG><a name="[6a]"></a>NMT_Pre</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, epos.o(.text), UNUSED)
+<P><STRONG><a name="[6a]"></a>NMT_Pre</STRONG> (Thumb, 204 bytes, Stack size 0 bytes, epos.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_SetMsg
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Epos_Delay
 </UL>
 
-<P><STRONG><a name="[6b]"></a>NMT_Start</STRONG> (Thumb, 182 bytes, Stack size 0 bytes, epos.o(.text), UNUSED)
+<P><STRONG><a name="[6b]"></a>NMT_Start</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, epos.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_SetMsg
 <LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Epos_Delay
 </UL>

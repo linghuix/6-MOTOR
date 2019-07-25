@@ -194,6 +194,11 @@ Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
         Epos_Delay(2);
         //printf("FMP0 = %d\r\n", temp);//输出CAN_FLAG_FMP0调试
     }
+		
+		if(n == -1){
+			data = SDO_Read(epos,Index,SubIndex);
+			return data;
+		}
     
      CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
      CAN_FIFORelease(CAN1, CAN_FilterFIFO0); 
@@ -230,7 +235,12 @@ Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
     }
 }
     
-    if(NEST==6){NEST=0;return 0;}           //读取错误返回零
+    if(NEST==6){
+			printf("wrong read--%X-%X\r\n",Index,SubIndex);
+			Print(RxMessage);
+			NEST=0;
+			return 0;
+		}           //读取错误返回零
     
     NEST=0;
     return data;
@@ -382,7 +392,7 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
                 SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
 				
-                SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,1000);                 //最大速度 Maximal Profile Velocity 
+                SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,10000);                 //最大速度 Maximal Profile Velocity 
 	              SDO_Write(epos, OD_QS_DECELERATION, 0x00, 1000);              //快速停止负加速度			
                 SDO_Write(epos, OD_MAX_MOTOR_SPEED, 0x00, 50000);              // Maximal Profile Velocity 
 

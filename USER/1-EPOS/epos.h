@@ -67,7 +67,8 @@ extern Uint32 pos_value_RH;
 //模式
 enum E_OBJ_MODE
 {
-    OP_MODE = 0x6060,           //Modes of operation, Sub-index 0x00, NTEGER8
+    OP_MODE = 0x6060,           //Modes of operation, Sub-index 0x00, INTEGER8
+	  OP_MODE_Read = 0x6061,      //Modes of operation display, Subindex 0x00 ,INTEGER8  RO
     
     CSP = 8,
         //in
@@ -127,7 +128,7 @@ enum E_OBJ_MODE
         //Motion_Profile_Type = 0x6086,
         
         //OUT
-        //Pos_Demand_Value = 0x6062,
+        //Velocity_Demand_Value = 0x606B,
         //Statusword = 0x6041,
         
     Profile_Position_Mode = (uint8_t)(1),//目标位置为零

@@ -63,7 +63,7 @@ Epos Controller,Controller1;        //控制器对象
 
 // 描述  : "主机"的主函数 
 int main(void){
-	Uint32 status;
+	Uint32 status, velocity;
 	Uint32 speed;
 
     SysTick_Init();                             //延迟中断定时器
@@ -151,17 +151,21 @@ int main(void){
 			   SDO_Write(&Controller, Motion_Profile_Type,0x00,0);
 			   SDO_Write(&Controller, Profile_Acceleration,0x00,1000);
 			   SDO_Write(&Controller, Profile_Deceleration,0x00,1000);
+				 SDO_Write(&Controller,Target_Velocity,0x00,100);
 
     
     while(1){
-			SDO_Write(&Controller,Target_Velocity,0x00,10000);
+
 			status = SDO_Read(&Controller, 0x6041,0x00);
-			speed = SDO_Read(&Controller, 0x606B,0x00);		
-			
+			Epos_Delay(2); 
+			speed = SDO_Read(&Controller, Velocity_Demand_Value,0x00);		
+			Epos_Delay(2); 
 			printf("status:0x%X\t%d\r\n",status,speed);
-			speed = SDO_Read(&Controller, 0x6061,0x00);	
-			printf("mode:%d\r\n",speed);
-			Epos_Delay(20); 
+			speed = SDO_Read(&Controller, OP_MODE_Read,0x00);	
+			velocity = SDO_Read(&Controller, Target_Velocity,0x00);	
+			Epos_Delay(2); 
+			printf("mode:%d\t%d\r\n",speed, velocity);
+			Epos_Delay(10); 
 			/*if(flag == 0){
 					flag = 0xff;
 					//printf("o\r\n");
