@@ -57,7 +57,7 @@ int angle_2[404] = {11744,11794,11843,11891,11936,11980,12022,12062,12099,12134,
   10681,10596,10528,10475,10437,10413,10402,10404,10418,10442,10477,10520,10572,10632,10682};
     
 Uint8 NODE_ID = 1;                          //EPOS的节点ID
-//Uint8 NODE_ID1 = 2;
+Uint8 NODE_ID1 = 2;
 
 Epos Controller,Controller1;        //控制器对象
 
@@ -75,40 +75,44 @@ int main(void){
     
     CAN_Config();                               //配置CAN模块   
     
-    printf("board init complete!\r\n");
+    printf("\r\n\r\n\r\nboard init complete!\r\n");
+	
     Epos_Delay(500);    
     
-  Epos_Init(&Controller,  NOT_USED, NODE_ID );      //初始化最大加速度，速度，跟踪误差，波特率1M/s，
-  //Epos_Init(&Controller1, NOT_USED, NODE_ID1);
+    Epos_Init(&Controller,  NOT_USED, NODE_ID );      //初始化最大加速度，速度，跟踪误差，波特率1M/s，
+    Epos_Init(&Controller1, NOT_USED, NODE_ID1);
+	
     printf("\r\ninitial EPOS done!\r\n\r\n");
     
     Epos_Delay(500);    
     
     //******** 模式设置 *******
     Epos_setMode(&Controller, Profile_Velocity_Mode);
-    //Epos_setMode(&Controller1, CSP);
+    Epos_setMode(&Controller1, Profile_Velocity_Mode);
     
-    Epos_Delay(500);    
+    Epos_Delay(500);   
+		
     //SDO_Read(&Controller,OD_STATUS_WORD,0x00);            //Switched On    Status=0x0140 绿灯闪烁
     //printf("\r\n%X\r\n",SDO_Read(&Controller,OD_STATUS_WORD,0x00));
+		
     printf("\r\nstatus\r\n");
     
     //******** 使能EPOS *******
     Epos_OperEn(&Controller);                                               //Switch On Disable to Operation Enable
-    //Epos_OperEn(&Controller1);
+    Epos_OperEn(&Controller1);
 
     printf("\r\nenable EPOS\r\n\r\n");
     
-    
     //******** EPOS复零位 *******
-    //SDO_Write(&Controller, Target_pos,0x00,0); //home position, 设为0
+    //SDO_Write(&Controller, Target_pos,0x00,0); 					//home position, 设为0
     //SDO_Write(&Controller1,PM_SET_VALUE,0x00,0x00);
     
     printf("\r\nEPOS set 0 \r\n\r\n");
+		
     //SDO_Write(&Controller, Target_Velocity,0x00,1000); //home position, 设为0
     //SDO_Write(&Controller1,PM_SET_VALUE,0x00,10682);
     
-    //Epos_Delay(2000); 
+    Epos_Delay(5000); 
     
     
     //******** Read Angels *******
@@ -148,10 +152,17 @@ int main(void){
     }*/
     
     //TIM_ITConfig(TIM2,TIM_IT_Update|TIM_IT_Trigger,ENABLE);
-			   SDO_Write(&Controller, Motion_Profile_Type,0x00,0);
-			   SDO_Write(&Controller, Profile_Acceleration,0x00,1000);
-			   SDO_Write(&Controller, Profile_Deceleration,0x00,1000);
-				 SDO_Write(&Controller,Target_Velocity,0x00,100);
+		 SDO_Write(&Controller, Motion_Profile_Type,0x00,0);
+		 SDO_Write(&Controller, Profile_Acceleration,0x00,4000);
+		 SDO_Write(&Controller, Profile_Deceleration,0x00,4000);
+		 SDO_Write(&Controller,Target_Velocity,0x00,50);
+		 SDO_Write(&Controller,OD_CTRL_WORD ,0x00,0x0F);
+		 
+		 SDO_Write(&Controller1, Motion_Profile_Type,0x00,0);
+		 SDO_Write(&Controller1, Profile_Acceleration,0x00,4000);
+		 SDO_Write(&Controller1, Profile_Deceleration,0x00,4000);
+		 SDO_Write(&Controller1,Target_Velocity,0x00,50);
+		 SDO_Write(&Controller1,OD_CTRL_WORD ,0x00,0x0F);
 
     
     while(1){

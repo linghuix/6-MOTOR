@@ -13,20 +13,20 @@ int NEST = 0;           //嵌套层数
 void Epos_ParamInit(Epos* epos)
 {
     //SDO_Read(epos,OD_STATUS_WORD,0x00);                                 //Fault Status=0x0108  红灯闪烁
-		SDO_Write(epos, OD_CTRL_WORD, 0x00, 0);
+
     SDO_Write(epos, OD_CTRL_WORD, 0x00, Fault_Reset);      //Fault_Reset command 控制字设置为0x80 第7位置1，参考固件手册 Fault reset figure3-3 事件15 驱动初始化完成
 
      //SDO_Read(epos,OD_STATUS_WORD,0x00);                               //Switch On    Status=0x0540/0140   绿灯闪烁
 
-    //SDO_Write(epos, OD_MAX_FLLW_ERR, 0x00, MAX_F_ERR);     //最大误差设置
+    SDO_Write(epos, OD_Following_ERR_window, 0x00, MAX_F_ERR);     //最大误差设置
 
     SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, MAX_P_V);   //最大速度
 
-    //SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度
+    SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度
 
-    //SDO_Write(epos, OD_P_DECELERATION, 0x00, epos->dec); //负加速度
+    SDO_Write(epos, OD_P_DECELERATION, 0x00, epos->dec); //负加速度
 
-    //SDO_Write(epos, OD_QS_DECELERATION, 0x00, QDEC);     //快速停止负加速度
+    SDO_Write(epos, OD_QS_DECELERATION, 0x00, QDEC);     //快速停止负加速度
 
     //SDO_Write(epos,OD_CAN_BITRATE,0x00,0x00);              //set value = 0. set CAN bitrate 1M/s. 
 
@@ -79,6 +79,7 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     int temp,n;
     temp++;//防止编译器报错
     
+	 printf("Send %d-%X-%X\r\n",epos->node_ID,Index,SubIndex);
     //Epos_Delay(1);
     while((CAN_MessagePending(CAN1, CAN_FIFO0)) > 0){       //发送SDO前完全清空 FIFO0 邮箱，防止占用内存
         Epos_Delay(2);
@@ -88,7 +89,7 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     
     //printf("\r\n");
     if(++NEST<6){
-                //printf("nest = %d\r\n",NEST);
+    printf("nest = %d\r\n",NEST);
         
     //Epos_Delay(2);    
     epos->buf.msg_id.bit.STDMSGID = 0x600 + epos->node_ID;                          //CANOPEN 的 客户端发送到服务器命令 SOD报文ID，参考CanOpen 标准
@@ -115,11 +116,12 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
 		
 		if(n == -1){
 			SDO_Write(epos,Index,SubIndex,param);
+			printf("No Received");
 			return;
 		}
      CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
 
-     //Print(RxMessage);
+     Print(RxMessage);
     
      CAN_FIFORelease(CAN1, CAN_FilterFIFO0); 
 
@@ -159,7 +161,9 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     }
     else{
         printf("\r\nwrong--%d-%X-%X \r\n",epos->node_ID,Index,SubIndex);
-		    Print(RxMessage);}
+		    Print(RxMessage);
+		    printf("\r\n");
+		}
     NEST=0;
 }
 
@@ -392,13 +396,13 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
                 SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
 				
-                SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,10000);                 //最大速度 Maximal Profile Velocity 
-	              SDO_Write(epos, OD_QS_DECELERATION, 0x00, 1000);              //快速停止负加速度			
-                SDO_Write(epos, OD_MAX_MOTOR_SPEED, 0x00, 50000);              // Maximal Profile Velocity 
+                SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,3000);                 //最大速度 Maximal Profile Velocity 
+	              SDO_Write(epos, OD_QS_DECELERATION, 0x00, 50000);              //快速停止负加速度			
+                SDO_Write(epos, OD_MAX_MOTOR_SPEED, 0x00, 5000);              // Maximal Profile Velocity 
 
-				        SDO_Write(epos, Max_gear_input_speed, 0x03,1000);
+				        //SDO_Write(epos, Max_gear_input_speed, 0x03,1000);
 
-                SDO_Write(epos,OD_Max_Acceleration,0x00,1000);   
+                //SDO_Write(epos,OD_Max_Acceleration,0x00,10000);   
 				
 								break;
                 
