@@ -16,7 +16,8 @@
 #include "can.h" 
 #include "epos.h"
 
-extern   CanTxMsg TxMessage;
+CanTxMsg TxMessage;                     //发送缓冲区
+CanRxMsg RxMessage;                     //接收缓冲区
 
 /*
  * 函数名：CAN_GPIO_Config
@@ -56,7 +57,7 @@ static void CAN_GPIO_Config(void)
  */
 static void CAN_NVIC_Config(void)
 {
-    /*NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
     // Configure one bit for preemption priority 
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     //中断设置
@@ -64,7 +65,7 @@ static void CAN_NVIC_Config(void)
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;           //抢占优先级0
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;                      //子优先级为0
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);*/
+    NVIC_Init(&NVIC_InitStructure);
 }
 
 
@@ -134,7 +135,7 @@ static void CAN_Filter_Config(void)
 void CAN_Config(void)
 {
   CAN_GPIO_Config();
-  CAN_NVIC_Config();
+  //CAN_NVIC_Config();
   CAN_Mode_Config();
   CAN_Filter_Config();   
 }

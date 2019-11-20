@@ -8,8 +8,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdint.h>
+#include "stm32f10x.h"
+#include "stm32f10x_can.h"
 
-#include "can.h"            // CAN物理底层
 
 //demand value 只是表示输入控制器的数值，只是经过规划器规划而已，并不是实际的数值
 
@@ -280,9 +281,7 @@ typedef struct __Epos
 
 
 //CANOpen
-extern void SDO_Write(Epos* epos1,Uint16 Index,Uint8 SubIndex,Uint32 param);
-//extern void SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex);
-extern Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex);
+
 extern void PDO_Config(Epos* A);
 extern void NMT_Start(Epos* epos, Uint32 ID);
 void NMT_Pre(Epos* epos, Uint32 ID);

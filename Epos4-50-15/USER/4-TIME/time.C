@@ -11,6 +11,7 @@
   ******************************************************************************
   */
 #include "timer.h"
+#include "HW_epos.h"
 
 extern int angle_1[323];
 extern int angle_2[404];
@@ -101,23 +102,10 @@ void TIME2_Configuration(void)
     TIM_Cmd(TIM2, ENABLE);                                                  //使能TIMx外设
 }
 
-void TIM2_interrupt(void){
-	//printf("%d\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));
-	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);		//清除中断标志
 
-	
-	//if(flag==0xff) flag = 0;
-	//printf("i\r\n");
-	
-	pos = (x>=323) ? angle_2[x-323]:angle_1[x];
-	//printf("%d\r\n",pos);
-	angle_sensor = SDO_Read(&Controller,Pos_Actual_Value,0x00);
-	//printf("i\r\n");
-	PM_SetAngle(&Controller, pos);
-	PM_SetAngle(&Controller1,pos);
-	
-	printf("%d\t%d\r\n",x,angle_sensor);
-	if( ++x==727 ) x = 0;
-	
-	//printf("%d\r\n\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));
+void TIM2_IRQHandler(void){
+
+	Epos_Conroller_TIMBack();
+
 }
+

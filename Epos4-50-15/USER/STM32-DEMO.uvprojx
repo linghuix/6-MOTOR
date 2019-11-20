@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_HD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CMSIS;..\USER;..\FWlib\inc;..\FWlib\src;.\4-TIME;.\1-EPOS;.\2-CAN;.\3-DELAY;.\5-USART;.\6-CONF</IncludePath>
+              <IncludePath>..\CMSIS;..\USER;..\FWlib\inc;..\FWlib\src;.\4-TIME;.\1-EPOS;.\2-CAN;.\3-DELAY;.\5-USART;.\6-CONF;.\7-CANOpen;.\8-Tasks</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -560,6 +560,21 @@
               <FileName>system_stm32f10x.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\CMSIS\system_stm32f10x.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Tasks</GroupName>
+          <Files>
+            <File>
+              <FileName>HW_epos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\8-Tasks\HW_epos.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdo_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\8-Tasks\sdo_control.c</FilePath>
             </File>
           </Files>
         </Group>

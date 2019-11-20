@@ -5,6 +5,9 @@
 #include "stm32f10x_can.h"
 #include "epos.h"
 
+extern CanTxMsg TxMessage;                     //发送缓冲区
+extern CanRxMsg RxMessage;                     //接收缓冲区
+
 static void CAN_GPIO_Config(void);
 static void CAN_NVIC_Config(void);
 static void CAN_Mode_Config(void);
