@@ -47,6 +47,11 @@ void CANOpen_App_Init(void)
 返 回 值 ： 无
 作    者 ： strongerHuang
 *************************************************/
+#include <data.h>
+#include "lifegrd.h"
+#include "canfestival.h"
+#include "dcf.h"
+#include "sysdep.h"
 static void CANOpen_App_Task(void *pvParameters)
 {
   unsigned char nodeID = 0x00;                   //节点ID
@@ -54,10 +59,16 @@ static void CANOpen_App_Task(void *pvParameters)
   setNodeId(&TestMaster_Data, nodeID);
   setState(&TestMaster_Data, Initialisation);
   setState(&TestMaster_Data, Operational);
-
+	Message m;
+	m.cob_id=0x80;
+	m.rtr=0;
+	m.len=2;
+	m.data[0]=0x80;
+	m.data[1]=0x80;
   for(;;)
   {
-    vTaskDelay(500);
+
+		canSend(TestMaster_Data.canHandle,&m);
 
     /* 应用代码 */
   }

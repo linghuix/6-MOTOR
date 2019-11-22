@@ -163,7 +163,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 	for(i=0;i<8;i++) printf("%02X ",RxMessage.Data[i]);
 	printf("\r\n");
 	
-	CAN_FIFORelease(CAN1, CAN_FilterFIFO0);  	//释放FIFO_0邮箱的消息,以便接收新消息
+	CAN_FIFORelease(CAN1, CAN_FIFO0);  	//释放FIFO_0邮箱的消息,以便接收新消息
 }
 
 /**

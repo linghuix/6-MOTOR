@@ -354,7 +354,7 @@ struct struct_CO_Data {
 	/* General */
 	UNS8 toggle;
 	CAN_PORT canHandle;	
-	scanIndexOD_t scanIndexOD;
+	scanIndexOD_t scanIndexOD;				//返回对应的字典条indextable
 	storeODSubIndex_t storeODSubIndex; 
 	
 	/* DCF concise */

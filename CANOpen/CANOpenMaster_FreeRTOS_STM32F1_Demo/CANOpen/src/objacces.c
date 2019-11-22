@@ -257,6 +257,7 @@ UNS32 _setODentry( CO_Data* d,
     }
 }
 
+
 UNS32 RegisterSetODentryCallBack(CO_Data* d, UNS16 wIndex, UNS8 bSubindex, ODCallback_t Callback)
 {
   UNS32 errorCode;
@@ -267,6 +268,7 @@ UNS32 RegisterSetODentryCallBack(CO_Data* d, UNS16 wIndex, UNS8 bSubindex, ODCal
     odentry->pSubindex[bSubindex].callback = Callback;
   return errorCode;
 }
+
 
 UNS32 _storeODSubIndex (CO_Data* d, UNS16 wIndex, UNS8 bSubindex)
 {

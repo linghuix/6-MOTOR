@@ -70,10 +70,10 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                      };
 
 /* index 0x1005 :   SYNC COB ID */
-                    UNS32 TestMaster_obj1005 = 0x0;   /* 0 */
+                    UNS32 TestMaster_obj1005 = 0x40000000ul;   /* 0 */
 
 /* index 0x1006 :   Communication / Cycle Period */
-                    UNS32 TestMaster_obj1006 = 0x0;   /* 0 */
+                    UNS32 TestMaster_obj1006 = 0x3E8;   /* 0 */
 
 /* index 0x100C :   Guard Time */ 
                     UNS16 TestMaster_obj100C = 0x0;   /* 0 */
