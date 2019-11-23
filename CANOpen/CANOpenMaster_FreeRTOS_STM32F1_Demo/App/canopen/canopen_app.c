@@ -54,21 +54,15 @@ void CANOpen_App_Init(void)
 #include "sysdep.h"
 static void CANOpen_App_Task(void *pvParameters)
 {
-  unsigned char nodeID = 0x00;                   //节点ID
+  unsigned char nodeID = 0x05;                   //节点ID
 
   setNodeId(&TestMaster_Data, nodeID);
   setState(&TestMaster_Data, Initialisation);
   setState(&TestMaster_Data, Operational);
-	Message m;
-	m.cob_id=0x80;
-	m.rtr=0;
-	m.len=2;
-	m.data[0]=0x80;
-	m.data[1]=0x80;
+
   for(;;)
   {
-
-		canSend(TestMaster_Data.canHandle,&m);
+		vTaskDelay(500); 
 
     /* 应用代码 */
   }

@@ -411,3 +411,78 @@ PDO_TRS表示TPDO的索引；
 
 PDO_TRS_MAP表示TPDO映射对象的索引。
 
+
+
+CANOpen_App_Task 的调用树状图
+
+
+```c
+//初始化，切换Master的状态为Initialisation，Operational
+CANOpen_App_Task
+    setState(&TestMaster_Data, Initialisation)
+        switchCommunicationState()
+            StartOrStop()  		//start LSS
+    
+
+    setState(&TestMaster_Data, Operational)
+        switchCommunicationState()
+            StartOrStop()  		//start SDO,SYNC,LifeGuard,csEmergency,PDO
+
+```
+
+## DEBUG
+
+调试可以通过串口打印当前 **调用的函数 和 进行的操作**
+
+```c
+#ifdef DEBUG_WAR_CONSOLE_ON
+#    define MSG_WAR(num, str, val)          \
+              MSG("%s,%d : 0X%x %s 0X%x \r\n",__FILE__, __LINE__,num, str, val);
+#else
+#    define MSG_WAR(num, str, val)
+#endif
+
+
+#define MSG(...) printf (__VA_ARGS__)
+```
+
+
+
+## HeartBeat
+
+启动条件  CAN-ID = 0x700+
+
+`if ( *d->ProducerHeartBeatTime )`  周期单位ms
+
+
+
+## SYNC
+
+> void startSYNC(CO_Data* d)   CAN-ID=0x80
+
+启动条件 
+
+`if(*d->COB_ID_Sync & 0x40000000ul && *d->Sync_Cycle_Period)`  周期单位us
+
+字典1005h 生成SYNC的控制位是第30位，即这个奇怪的数字0x40000000ul 
+
+1005h和1006h共同决定是否产生SYNC，有一个条件不满足就不能够成为SYNC的生产者，但这两个条件是有区别的，1005是基本条件，是控制SYNC的开关，而1006只是个限制条件，如果它为0的话，SYNC的周期将无意义，因此要限制它。
+
+1005决定了这个节点是SYNC生产者，但是1006的设置控制产生SYNC的周期
+
+
+
+## SDO
+
+CO_data结构 的修改
+
+
+
+## PDO
+
+
+
+
+
+
+
