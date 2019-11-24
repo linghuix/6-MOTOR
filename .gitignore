@@ -1,4 +1,3 @@
-*.s
 Epos2-50-5/CMSIS/*
 Epos2-50-5/FWlib/*
 Epos2-50-5/Listing/*
@@ -16,14 +15,12 @@ Epos4-50-15/Output/*
 *.dbgconf
 *.uvoptx
 *.uvopt
-*.txt
 Epos2-50-5/USER/RTE/_Target_1/RTE_Components.h
 *.lst
 *.o
 *.crf
 *.d
 *.axf
-*.uvprojx
 *.htm
 *.hex
 *.map
@@ -31,6 +28,5 @@ Epos2-50-5/USER/RTE/_Target_1/RTE_Components.h
 *.sct
 *.dep
 *.inc
-*.h
 *.url
 *.od

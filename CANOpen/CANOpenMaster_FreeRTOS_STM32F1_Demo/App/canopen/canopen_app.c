@@ -58,6 +58,7 @@ static void CANOpen_App_Task(void *pvParameters)
 
   setNodeId(&TestMaster_Data, nodeID);
   setState(&TestMaster_Data, Initialisation);
+	setState(&TestMaster_Data, Pre_operational);	/**心跳,同步周期协议配置 */
   setState(&TestMaster_Data, Operational);
 
   for(;;)

@@ -28,6 +28,7 @@ int main(void){
 		Epos_INIT();
     
     while(1){
-			Epos_ReceiveDate();
+			//Epos_ReceiveDate();
+			Epos_ControlTask();
     }
 }

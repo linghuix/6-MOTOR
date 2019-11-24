@@ -16,94 +16,113 @@
 Uint8 NODE_ID = 1;                          //EPOS的节点ID
 Uint8 NODE_ID1 = 2;
 Epos Controller,Controller1;        				//控制器对象
+
 void Epos_INIT()
 {
-		Epos_Init(&Controller,  NOT_USED, NODE_ID );      //初始化最大加速度，速度，跟踪误差，波特率1M/s，
-    Epos_Init(&Controller1, NOT_USED, NODE_ID1);
-	
+    Epos_Init(&Controller1, NOT_USED, NODE_ID1);	//初始化最大加速度，速度，跟踪误差，波特率1M/s，
     printf("\r\ninitial EPOS done!\r\n\r\n");
-	
-	
 		Epos_Delay(500);    
     
-    //******** 模式设置 *******
-    Epos_setMode(&Controller, Profile_Velocity_Mode);
-    Epos_setMode(&Controller1, Profile_Velocity_Mode);
-    
+    //******** 控制模式设置 *******
+    //Epos_setMode(&Controller1, Profile_Velocity_Mode);
+		Epos_setMode(&Controller1, Profile_Position_Mode);
     Epos_Delay(500);
 
-	    //SDO_Read(&Controller,OD_STATUS_WORD,0x00);            //Switched On    Status=0x0140 绿灯闪烁
-    //printf("\r\n%X\r\n",SDO_Read(&Controller,OD_STATUS_WORD,0x00));
-		
-    printf("\r\nstatus\r\n");
+    printf("\r\n Mode set \r\n");
     
     //******** 使能EPOS *******
-    Epos_OperEn(&Controller);                                               //Switch On Disable to Operation Enable
-    Epos_OperEn(&Controller1);
+    Epos_OperEn(&Controller1);                                               //Switch On Disable to Operation Enable
+    printf("\r\n Enable EPOS \r\n\r\n");
+}
 
-    printf("\r\nenable EPOS\r\n\r\n");
+
+
+
+/** 速度模式的速度设置 */
+void Epos_SpeedSet(Uint32 speed){
+	
+		 SDO_Write(&Controller1,Target_Velocity,0x00,speed);
+		 SDO_Write(&Controller1,OD_CTRL_WORD ,0x00,0x0F);	
+}
+
+/**************Position Mode*********************************/
+void PM_SetAngle(Epos* epos, Uint32 angle){
     
-    //******** EPOS复零位 *******
-    //SDO_Write(&Controller, Target_pos,0x00,0); 					//home position, 设为0
-    //SDO_Write(&Controller1,PM_SET_VALUE,0x00,0x00);
-    
-    printf("\r\nEPOS set 0 \r\n\r\n");
+    #if defined SDO
+    SDO_Write(epos, Target_pos, 0x00, angle);
+        #endif 
+}
+
+
+/** Position Set */
+void Epos_PosSet(Epos* epos, Uint32 pos){
+	
+	SDO_Write(&Controller1,OD_CTRL_WORD ,0x00,0x0F);	
+		 PM_SetAngle(epos,pos);
+		 SDO_Write(&Controller1,OD_CTRL_WORD ,0x00,0x7F);	
+}
+
+
+/**控制器启动 */
+void Epos_Start(void){
+	
+    //******** EPOS basic COMMANDING PARAMETERS *******
+		SDO_Write(&Controller1, Profile_Acceleration,0x00,4000);
+		SDO_Write(&Controller1, Profile_Deceleration,0x00,4000);	
+		SDO_Write(&Controller1, Motion_Profile_Type,0x00,0);
 		
-    //SDO_Write(&Controller, Target_Velocity,0x00,1000); //home position, 设为0
-    //SDO_Write(&Controller1,PM_SET_VALUE,0x00,10682);
-    
-    Epos_Delay(5000); 
-    
-    
-    //******** Read Angels *******
-    //printf("\r\nEPOS control beginning!\r\n\r\n");
+		SDO_Write(&Controller1, OD_P_VELOCITY ,0x00, 50);
+	
+    Epos_Delay(2000); 
+		printf("\r\n EPOS control beginning!\r\n\r\n");
 
-    /*NMT_Pre(&Controller, ALL);                        
-    SDO_Read(&Controller,OD_STATUS_WORD,0x00);            
+}
 
-    PDO_Config(&Controller);
-    SDO_Read(&Controller,0x1400,0x01);
-    SDO_Read(&Controller,0x1600,0x00);
-    SDO_Read(&Controller,0x1600,0x01);
 
-    NMT_Start(&Controller, ALL);
-    SDO_Read(&Controller,OD_STATUS_WORD,0x00);          //第九位为1   Status=0x0337 绿灯常量*/
-    
+/*
+ * 函数名：实时控制任务
+ * 描述  ：
+ * 调用  ：
+ */
+/**实现速度摇摆控制 */
+void speed_Task(void){
+	
+	Uint32 speed = 50;
+	
+	Epos_SpeedSet(speed);
+	Epos_Delay(1000); 
+	
+	Epos_SpeedSet(-speed);
+	Epos_Delay(1000); 
+	
+	Epos_SpeedSet(speed*5);
+	Epos_Delay(1000); 
 
-    //SDO_Write(&Controller, 0x206B, 0x00, 500);
-    //SDO_Write(&Controller1, 0x206B, 0x00, 1000);
-    
-    
-    /*while(1){
-        
-        pos = 30000*sin(PI*x/50);                     //从0-30000变化  发送太快，数据间隔太大，电机抖动
-        //pos = (x>=323)? angle_2[x-323]:angle_1[x];
-        //PDO_Write(201, pos);
-        
-        angle_sensor = SDO_Read(&Controller,Pos_Actual_Value,0x00);
-        
-        PM_SetAngle(&Controller, pos);
-        //PM_SetAngle(&Controller1,pos);
-        
-        
-        Epos_Delay(7);                                                      //delay 10ms
-        printf("%d\t%d\r\n",x,angle_sensor);
-        if( ++x==727 ){x = 0;}
-    }*/
-    
-    //TIM_ITConfig(TIM2,TIM_IT_Update|TIM_IT_Trigger,ENABLE);
-		 SDO_Write(&Controller, Motion_Profile_Type,0x00,0);
-		 SDO_Write(&Controller, Profile_Acceleration,0x00,4000);
-		 SDO_Write(&Controller, Profile_Deceleration,0x00,4000);
-		 SDO_Write(&Controller,Target_Velocity,0x00,50);
-		 SDO_Write(&Controller,OD_CTRL_WORD ,0x00,0x0F);
-		 
-		 SDO_Write(&Controller1, Motion_Profile_Type,0x00,0);
-		 SDO_Write(&Controller1, Profile_Acceleration,0x00,4000);
-		 SDO_Write(&Controller1, Profile_Deceleration,0x00,4000);
-		 SDO_Write(&Controller1,Target_Velocity,0x00,50);
-		 SDO_Write(&Controller1,OD_CTRL_WORD ,0x00,0x0F);
-		 
+	Epos_SpeedSet(-speed*5);
+	Epos_Delay(1000); 
+}
+
+
+/** position task 摇摆*/
+void pos_Task(void){
+	
+	Uint32 pos = 20000,i;
+	
+	for(i=0;i<5;i++){
+		Epos_PosSet(&Controller1 ,pos*i);
+		Epos_Delay(50); 
+	}
+	
+	for(i=0;i<5;i++){
+		Epos_PosSet(&Controller1,-pos*i);
+		Epos_Delay(50); 
+	}
+}
+
+
+void Epos_ControlTask(void){
+	
+	pos_Task();
 }
 
 
@@ -126,13 +145,22 @@ void Epos_ReceiveDate(){
 		Epos_Delay(2); 
 		printf("mode:%d\t%d\r\n",speed, velocity);
 		Epos_Delay(10); 
-		/*if(flag == 0){
-			flag = 0xff;
-			//printf("o\r\n");
-		}*/
 }
 
 
+//状态的控制
+void State(void){
+
+    NMT_Pre(&Controller, ALL);                        
+    SDO_Read(&Controller,OD_STATUS_WORD,0x00);            
+
+    PDO_Config(&Controller);
+    SDO_Read(&Controller,0x1400,0x01);
+    SDO_Read(&Controller,0x1600,0x00);
+    SDO_Read(&Controller,0x1600,0x01);
+
+    NMT_Start(&Controller, ALL);
+}
 
 
 /*

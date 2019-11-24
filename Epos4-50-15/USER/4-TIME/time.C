@@ -105,7 +105,7 @@ void TIME2_Configuration(void)
 
 void TIM2_IRQHandler(void){
 
-	Epos_Conroller_TIMBack();
+	//Epos_Conroller_TIMBack();
 
 }
 

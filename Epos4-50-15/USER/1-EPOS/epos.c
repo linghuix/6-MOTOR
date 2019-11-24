@@ -189,7 +189,7 @@ void Epos_setMode(Epos* epos, Uint16 mode){
 				
                 break;
         
-        case(Velocity_Mode):
+        case(Velocity_Mode):		//CONFIGURATION PARAMETERS
                 //SDO_Write(epos,OP_MODE,0x00,Velocity_Mode); 
                 SDO_Write(epos,OD_Max_Acceleration,0x00,1000);                                                  // set Max Acceleration
                 SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, MAX_P_V);                                            // Maximal Profile Velocity 
@@ -203,28 +203,24 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 SDO_Write(epos, OD_MOTOR_DATA, 0x05, 1);         // thermal time constant
                 break;
                 
-        case(Profile_Position_Mode):
-                //SDO_Write(epos,OD_Position_Window, 0x00,4294967295);             //关闭 position window 
-                SDO_Write(epos, Pos_Window_Time, 0x00, 0);
-                
+        case(Profile_Position_Mode):	//CONFIGURATION PARAMETERS
                 SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
                 SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
                 SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, MAX_P_V);              // Maximal Profile Velocity 
+								SDO_Write(epos, OD_MAX_MOTOR_SPEED, 0x00, 5000);								//参考电机手册
+								SDO_Write(epos, Max_gear_input_speed, 0x03,1000);
                 SDO_Write(epos, OD_QS_DECELERATION, 0x00, QDEC);                //快速停止负加速度
-                SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,100);                 //最大速度 Maximal Profile Velocity 
+                SDO_Write(epos,OD_Max_Acceleration,0x00,10000);   
                 break;
                 
-        case(Profile_Velocity_Mode):
+        case(Profile_Velocity_Mode):		//CONFIGURATION PARAMETERS
                 SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
                 SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
-				
                 SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,3000);                 //最大速度 Maximal Profile Velocity 
 	              SDO_Write(epos, OD_QS_DECELERATION, 0x00, 50000);              //快速停止负加速度			
                 SDO_Write(epos, OD_MAX_MOTOR_SPEED, 0x00, 5000);              // Maximal Profile Velocity 
-
-				        //SDO_Write(epos, Max_gear_input_speed, 0x03,1000);
-
-                //SDO_Write(epos,OD_Max_Acceleration,0x00,10000);   
+				        SDO_Write(epos, Max_gear_input_speed, 0x03,1000);
+                SDO_Write(epos,OD_Max_Acceleration,0x00,10000);   
 				
 								break;
                 
@@ -266,10 +262,3 @@ void Epos_Delay(Uint32 time){
     Delay_ms(time);
 }
 
-/**************Position Mode*********************************/
-void PM_SetAngle(Epos* epos, Uint32 angle){
-    
-    #if defined SDO
-    SDO_Write(epos, Target_pos, 0x00, angle);
-        #endif 
-}

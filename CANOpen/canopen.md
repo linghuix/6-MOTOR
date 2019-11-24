@@ -472,6 +472,10 @@ CANOpen_App_Task
 
 
 
+Epos4 中并没有SYNC的周期设定，只有对应的0x80标识符的设置，因此必须由上位机产生对应的标识符的SYNC
+
+
+
 ## SDO
 
 CO_data结构 的修改

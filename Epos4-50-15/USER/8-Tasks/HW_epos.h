@@ -7,7 +7,9 @@
 void Epos_INIT(void);
 void Epos_ReceiveDate(void);
 void Epos_Conroller_TIMBack(void);
+void Epos_Start(void);
 
+void Epos_ControlTask(void);
 
 #endif
 

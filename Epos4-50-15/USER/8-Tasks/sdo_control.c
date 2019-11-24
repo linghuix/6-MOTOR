@@ -13,7 +13,7 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     int temp,n;
     temp++;//防止编译器报错
     
-	 printf("Send %d-%X-%X\r\n",epos->node_ID,Index,SubIndex);
+		printf("Send %d-%X-%X\r\n",epos->node_ID,Index,SubIndex);
     //Epos_Delay(1);
     while((CAN_MessagePending(CAN1, CAN_FIFO0)) > 0){       //发送SDO前完全清空 FIFO0 邮箱，防止占用内存
         Epos_Delay(2);
@@ -22,8 +22,8 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     }
     
     //printf("\r\n");
-    if(++NEST<6){
-    printf("nest = %d\r\n",NEST);
+    if(++NEST<2){
+    //printf("nest = %d\r\n",NEST);
         
     //Epos_Delay(2);    
     epos->buf.msg_id.bit.STDMSGID = 0x600 + epos->node_ID;                          //CANOPEN 的 客户端发送到服务器命令 SOD报文ID，参考CanOpen 标准
@@ -50,7 +50,7 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
 		
 		if(n == -1){
 			SDO_Write(epos,Index,SubIndex,param);
-			printf("No Received");
+			//printf("No Received");
 			return;
 		}
      CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
@@ -68,7 +68,7 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
             
             case(0x60):
                 if((Index==(((Uint16)RxMessage.Data[2]<<8)+RxMessage.Data[1])) && (SubIndex==RxMessage.Data[3])){
-                    //printf("WoK\r\n");
+                    printf("WoK\r\n");
                     break;
                 }
                 else{
@@ -94,9 +94,9 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     }
     }
     else{
-        printf("\r\nwrong--%d-%X-%X \r\n",epos->node_ID,Index,SubIndex);
+        /*printf("\r\nwrong--%d-%X-%X \r\n",epos->node_ID,Index,SubIndex);
 		    Print(RxMessage);
-		    printf("\r\n");
+		    printf("\r\n");*/
 		}
     NEST=0;
 }
