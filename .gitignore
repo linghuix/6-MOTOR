@@ -22,3 +22,5 @@ Epos4-50-15/Output/*
 *.inc
 *.url
 *.od
+*.txt
+*.XLH

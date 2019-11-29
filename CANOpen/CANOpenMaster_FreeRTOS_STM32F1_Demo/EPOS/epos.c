@@ -231,7 +231,7 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 break;
                 
         default: 
-                printf("\r\nerror mode\r\n");
+                printf("error mode\r\n");
         
     }
 }
