@@ -78,7 +78,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /* --------------------- */
 #ifdef DEBUG_ERR_CONSOLE_ON
 #    define MSG_ERR(num, str, val)            \
-          MSG("%s,%d : 0X%x %s 0X%x \n",__FILE__, __LINE__,num, str, val);
+          MSG("%s,%d : 0X%x %s 0X%x \r\n",__FILE__, __LINE__,num, str, val);
 #else
 #    define MSG_ERR(num, str, val)
 #endif

@@ -118,16 +118,16 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                      {
                        { RO, uint8, sizeof (UNS8), (void*)&ServerNumber_0x1200, NULL },
                        { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1200_COB_ID_SDO_CS_RX, NULL },
-											 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1200_COB_ID_SDO_SC_TX, NULL },
+						{ RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1200_COB_ID_SDO_SC_TX, NULL },
                      };
 										 
 /* index 0x1280 :   SDO clit .    Index 1280h-12FFh，Client SDO Parameter，必须如果支持对应的Client SDO  
 										 当我需要配置其他节点的字典值时，我变成了客户端，要求服务器自己修改自己*/ 
 										#define Node 2
 										UNS8 ClientNumber_0x1280 = 3;
-										UNS8 TestMaster_obj1280_COB_ID_Server = Node;//服务器，也就是需要修改的节点
                     UNS32 TestMaster_obj1280_COB_ID_SDO_CS_TX  = 0x600 + Node;
                     UNS32 TestMaster_obj1280_COB_ID_SDO_SC_RX = 0x580 + Node;
+										UNS8 TestMaster_obj1280_COB_ID_Server = Node;//服务器，也就是需要修改的节点
                     subindex TestMaster_Index1280[] = 
                      {
                        { RO, uint8,  sizeof (UNS8), (void*)&ClientNumber_0x1280, NULL },

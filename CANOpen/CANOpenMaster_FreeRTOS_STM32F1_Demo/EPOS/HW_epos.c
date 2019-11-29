@@ -3,37 +3,40 @@
 #include "canfestival.h"
 #include "TestMaster.h"
 #include "sdo_control.h"
-
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "task.h"
 /*
- * º¯ÊıÃû£º½ÓÊÕ´«¸ĞÆ÷Êı¾İ
- * ÃèÊö  £º
- * µ÷ÓÃ  £º
+ * å‡½æ•°åï¼šæ¥æ”¶ä¼ æ„Ÿå™¨æ•°
+ * æè¿° 
+ * è°ƒç”¨  
  */
-Uint8 NODE_ID = 0;                          //EPOSµÄ½ÚµãID
+
+Uint8 NODE_ID = 0;                          //EPOS ID
 Uint8 NODE_ID1 = 2;
 
-Epos Controller,Controller1;        				//¿ØÖÆÆ÷¶ÔÏó
+Epos Controller,Controller1;        				//æ§åˆ¶å™¨å¯¹
 
 void Epos_INIT()
 {
-    Epos_Init(&Controller1, NOT_USED, NODE_ID1);	//³õÊ¼»¯×î´ó¼ÓËÙ¶È£¬ËÙ¶È£¬¸ú×ÙÎó²î£¬²¨ÌØÂÊ1M/s£¬
+    Epos_Init(&Controller1, NOT_USED, NODE_ID1);	//åˆå§‹åŒ–æœ€å¤§åŠ é€Ÿåº¦ï¼Œé€Ÿåº¦ï¼Œè·Ÿè¸ªè¯¯å·®ï¼Œæ³¢ç‰¹1M/s
 	
 	
-    // Í¨¹ıcanopenÉè¶¨EPOS¿ØÖÆÆ÷²ÎÊı
+    ///é€šè¿‡canopenè®¾å®šEPOSæ§åˆ¶å™¨å‚
     printf("Epos_SInit\r\n");
     Epos_ParamInit(&Controller1);
     printf("\r\ninitial EPOS done!\r\n\r\n");
-		Epos_Delay(500);
+		vTaskDelay(500); 
 	
     
-    //******** ¿ØÖÆÄ£Ê½ÉèÖÃ *******
+    //******** æ§åˆ¶æ¨¡å¼è®¾ç½® *******
     //Epos_setMode(&Controller1, Profile_Velocity_Mode);
 		Epos_setMode(&Controller1, Profile_Position_Mode);
-    Epos_Delay(500);
+    vTaskDelay(500); 
 
     printf("\r\n Mode set \r\n");
     
-    //******** Ê¹ÄÜEPOS *******
+    //******** ä½¿èƒ½EPOS *******
     Epos_OperEn(&Controller1);                                               //Switch On Disable to Operation Enable
     printf("\r\n Enable EPOS \r\n\r\n");
 }
@@ -41,7 +44,7 @@ void Epos_INIT()
 
 
 
-/** ËÙ¶ÈÄ£Ê½µÄËÙ¶ÈÉèÖÃ */
+/** é€Ÿåº¦æ¨¡å¼çš„é€Ÿåº¦è®¾ç½® */
 void Epos_SpeedSet(Uint32 speed){
 	
 		 SDO_Write(&Controller1,Target_Velocity,0x00,speed);
@@ -66,7 +69,7 @@ void Epos_PosSet(Epos* epos, Uint32 pos){
 }
 
 
-/**¿ØÖÆÆ÷Æô¶¯ */
+/**æ§åˆ¶å™¨å¯*/
 void Epos_Start(void){
 	
     //******** EPOS basic COMMANDING PARAMETERS *******
@@ -83,11 +86,11 @@ void Epos_Start(void){
 
 
 /*
- * º¯ÊıÃû£ºÊµÊ±¿ØÖÆÈÎÎñ
- * ÃèÊö  £º
- * µ÷ÓÃ  £º
+ * å‡½æ•°åï¼šå®æ—¶æ§åˆ¶ä»»åŠ¡
+ * æè¿°  
+ * è°ƒç”¨  
  */
-/**ÊµÏÖËÙ¶ÈÒ¡°Ú¿ØÖÆ */
+/**å®ç°é€Ÿåº¦æ‘‡æ‘†æ§åˆ¶ */
 void speed_Task(void){
 	
 	Uint32 speed = 50;
@@ -106,7 +109,7 @@ void speed_Task(void){
 }
 
 
-/** position task Ò¡°Ú*/
+/** position task æ‘‡æ‘†*/
 void pos_Task(void){
 	
 	Uint32 pos = 20000,i;
@@ -130,9 +133,9 @@ void Epos_ControlTask(void){
 
 
 /*
- * º¯ÊıÃû£º½ÓÊÕ´«¸ĞÆ÷Êı¾İ
- * ÃèÊö  £º
- * µ÷ÓÃ  £º
+ * å‡½æ•°åï¼šæ¥æ”¶ä¼ æ„Ÿå™¨æ•°
+ * æè¿°  
+ * è°ƒç”¨  
  */
 Uint32 status;
 Uint32 velocity, speed;
@@ -151,7 +154,7 @@ void Epos_ReceiveDate(){
 }
 
 
-//×´Ì¬µÄ¿ØÖÆ
+//çŠ¶æ€çš„æ§åˆ¶
 void State(void){
 
     NMT_Pre(&Controller, ALL);                        
@@ -167,15 +170,15 @@ void State(void){
 
 
 /*
- * º¯ÊıÃû£º½ÓÊÕ´«¸ĞÆ÷Êı¾İ
- * ÃèÊö  £º
- * µ÷ÓÃ  £º
+ * å‡½æ•°åï¼šæ¥æ”¶ä¼ æ„Ÿå™¨æ•°
+ * æè¿°  
+ * è°ƒç”¨  
  */
 #define PI 3.1415
 
-__IO uint32_t flag = 0xff;          //ÓÃÓÚ±êÖ¾ÊÇ·ñ½ÓÊÕµ½Êı¾İ£¬ÔÚÖĞ¶Ïº¯ÊıÖĞ¸³Öµ
-UNS32 pos=0;                       //µç»úÎ»ÖÃ
-int x=0;                            //½Ç¶È×Ô±äÁ¿
+__IO uint32_t flag = 0xff;          //ç”¨äºæ ‡å¿—æ˜¯å¦æ¥æ”¶åˆ°æ•°æ®ï¼Œåœ¨ä¸­æ–­å‡½æ•°ä¸­èµ‹
+UNS32 pos=0;                       //ç”µæœºä½ç½®
+int x=0;                            //è§’åº¦è‡ªå˜
 int angle_sensor;
 double ang[51]  = {6.464,7.102,8.449,10.158,11.772,12.992,13.599,13.527,12.995,12.22,11.283,10.256,9.193,8.152,7.174,6.271,5.442,4.702,4.079,3.597,3.299,3.222,
     3.418,3.947,4.855,6.2,8.084,10.621,13.945,18.181,23.361,29.341,35.748,42.002,47.489,51.734,54.476,55.651,55.3,53.502,50.384,46.118,40.922,35.037,28.801,22.629,
@@ -214,7 +217,7 @@ int angle_2[404] = {11744,11794,11843,11891,11936,11980,12022,12062,12099,12134,
 void Epos_Conroller_TIMBack(){
 
 		//printf("%d\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));
-		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);		//Çå³ıÖĞ¶Ï±êÖ¾
+		TIM_ClearITPendingBit(TIM2, TIM_IT_Update);		//æ¸…é™¤ä¸­æ–­æ ‡å¿—
 
 
 		//if(flag==0xff) flag = 0;

@@ -1386,3 +1386,4 @@ T1E10 100:038 JLINK_ReadMemU32(0xE0001058, 0x0001 Items, ...) -- CPU_ReadMem(4 b
 T0E0C 100:620 JLINK_Close() -- CPU_ReadMem(4 bytes @ 0xE0001000) -- CPU_WriteMem(4 bytes @ 0xE0002008) -- CPU_WriteMem(4 bytes @ 0xE000200C) -- CPU_WriteMem(4 bytes @ 0xE0002010) -- CPU_WriteMem(4 bytes @ 0xE0002014) >0x80 JTAG> >0x08 JTAG> (0006ms, 1014ms total)
 T0E0C 100:620  (0006ms, 1014ms total)
 T0E0C 100:620 Closed (0006ms, 1014ms total)
+

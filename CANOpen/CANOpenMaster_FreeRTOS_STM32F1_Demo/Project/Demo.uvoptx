@@ -4,7 +4,6 @@
   <SchemaVersion>1.0</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
-
   <Extensions>
     <cExt>*.c</cExt>
     <aExt>*.s*; *.src; *.a*</aExt>
@@ -119,6 +118,12 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+
+          <Key>DLGUARM</Key>
+          <Name>d</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>JL2CM3</Key>
           <Name>-U63631261 -O14 -S2 -ZTIFSpeedSel5000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight JTAG-DP") -D00(3BA00477) -L00(4) -N01("Unknown JTAG device") -D01(06414041) -L01(5) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F10x_512.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F103ZE$Flash\STM32F10x_512.FLM)</Name>
         </SetRegEntry>
@@ -152,98 +157,120 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>1849</LineNumber>
+          <LineNumber>26</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134221840</Address>
+          <Address>134221620</Address>
+
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\CANOpen\src\sdo.c</Filename>
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\EPOS\epos.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Demo\../CANOpen/src/sdo.c\1849</Expression>
+          <Expression>\\Demo\../EPOS/epos.c\26</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>257</LineNumber>
+          <LineNumber>704</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134261214</Address>
+          <Address>134261064</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\CANOpen\src\states.c</Filename>
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\CANOpen\src\sdo.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Demo\../CANOpen/src/states.c\257</Expression>
+          <Expression>\\Demo\../CANOpen/src/sdo.c\704</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>59</LineNumber>
+          <LineNumber>684</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218806</Address>
+          <Address>134260898</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\App\canopen\canopen_app.c</Filename>
+
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\CANOpen\src\sdo.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Demo\../App/canopen/canopen_app.c\59</Expression>
+          <Expression>\\Demo\../CANOpen/src/sdo.c\684</Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>57</LineNumber>
+
+          <LineNumber>694</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218796</Address>
+          <Address>134260988</Address>
+
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\App\canopen\canopen_app.c</Filename>
+
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\CANOpen\src\sdo.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Demo\../App/canopen/canopen_app.c\57</Expression>
+          <Expression>\\Demo\../CANOpen/src/sdo.c\694</Expression>
+
         </Bp>
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>27</LineNumber>
+          <LineNumber>734</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134261368</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\EPOS\epos.c</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\CANOpen\src\sdo.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\Demo\../CANOpen/src/sdo.c\734</Expression>
         </Bp>
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>34</LineNumber>
+          <LineNumber>778</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
+          <Address>134239652</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\EPOS\epos.c</Filename>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\CANOpen\src\sdo.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression></Expression>
+          <Expression>\\Demo\../CANOpen/src/sdo.c\778</Expression>
+        </Bp>
+        <Bp>
+          <Number>6</Number>
+          <Type>0</Type>
+          <LineNumber>41</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134221432</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\101-WorkShop\鐢佃矾\6-MOTOR\CANOpen\CANOpenMaster_FreeRTOS_STM32F1_Demo\EPOS\HW_epos.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Demo\../EPOS/HW_epos.c\41</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -291,6 +318,26 @@
           <count>8</count>
           <WinNumber>1</WinNumber>
           <ItemText>data</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Index</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Size</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Type</ItemText>
+        </Ww>
+        <Ww>
+          <count>12</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>m</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -582,7 +629,7 @@
 
   <Group>
     <GroupName>CANOpen/src</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -590,7 +637,7 @@
       <GroupNumber>5</GroupNumber>
       <FileNumber>18</FileNumber>
       <FileType>1</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\CANOpen\src\dcf.c</PathWithFileName>
@@ -834,7 +881,7 @@
 
   <Group>
     <GroupName>App</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -890,7 +937,7 @@
 
   <Group>
     <GroupName>App/canopen</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
