@@ -1,6 +1,8 @@
+#include "HW_epos.h"
 #include "epos.h"
-#include "can.h"
-#include "delay.h"
+#include "canfestival.h"
+#include "TestMaster.h"
+#include "sdo_control.h"
 
 /***** 
 write parameter to Object Dictionary through CAN use SDO messages
@@ -11,6 +13,17 @@ int NEST = 0;           //嵌套层数
 /**
 	*
 	*/
+
+
+uint32_t SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
+{
+	UNS32 abortCode;
+	writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, 4, uint32, &param ,0);	//向can网络中的节点发送
+	while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS );
+	return abortCode;
+}
+
+	/*
 void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
 {
     int temp,n;
@@ -97,16 +110,28 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
     }
     }
     else{
-        /*printf("\r\nwrong--%d-%X-%X \r\n",epos->node_ID,Index,SubIndex);
-		    Print(RxMessage);
-		    printf("\r\n");*/
+        //printf("\r\nwrong--%d-%X-%X \r\n",epos->node_ID,Index,SubIndex);
+		    //Print(RxMessage);
+		    //printf("\r\n");
 		}
     NEST=0;
 }
 
 
+*/
+
+
 /**** 发送CAN SDO读报文，并接受返回值 ***/
 Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
+{	
+	UNS32 data;
+	UNS32 size = 4;	//data字节数
+	UNS32 abortCode;
+	readNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, uint32, 0);
+	while(getReadResultNetworkDict(&TestMaster_Data, epos->node_ID, &data, &size, &abortCode) == SDO_UPLOAD_IN_PROGRESS);
+	return data;
+}
+/*Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
 {
     int temp,n;
     Uint32 data;
@@ -185,4 +210,4 @@ Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
     
     NEST=0;
     return data;
-}
+}*/

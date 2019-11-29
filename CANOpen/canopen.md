@@ -26,6 +26,12 @@ https://blog.csdn.net/sinat_19440229/article/details/86712013
 
 
 
+字典配置
+
+https://blog.csdn.net/bood123/article/details/49835619
+
+
+
 canfestival库的代码结构
 
 
@@ -164,7 +170,7 @@ Object 1006h设为0，是不是从站也是一个SYNC对象的消费者。？
 
 
 
-## 代码框架：
+## 代码框架
 
 data.h	一个canopen节点的数据结构定义
 
@@ -182,10 +188,8 @@ App/CanOpen 文件夹 CanOpen的App配置
 ```
 TIM2中断——bsp_timer.h/c 中断分频CANOPEN_TIM_PRESCALER_VALUE ，优先级 CANOPEN_TIM_Priority=12
 
-CAN1接收中断——bsp_can.h/c   1MBps，无过滤，CANx`
+CAN1接收中断——bsp_can.h/c   1MBps，无过滤，CANx`			
 ```
-
-
 
 2. 初始任务
 
@@ -203,25 +207,26 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 ```c
 #define CANOPEN_NODE_DATA_INITIALIZER(NODE_PREFIX) {\
 	/* Object dictionary*/\
-	& NODE_PREFIX ## _bDeviceNodeId,     /* bDeviceNodeId */\
-	NODE_PREFIX ## _objdict,             /* objdict  */\
-	NODE_PREFIX ## _PDO_status,          /* PDO_status */\
+	& NODE_PREFIX ## _bDeviceNodeId,     /* bDeviceNodeId */\	//设备的ID  1, 127
+	NODE_PREFIX ## _objdict,             /* objdict  */\		//字典对象指针，见词条Objdict
+	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//发送PDO通信参数的数组
 	NULL,                                /* RxPDO_EventTimers */\
 	_RxPDO_EventTimers_Handler,          /* RxPDO_EventTimers_Handler */\
-	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\
-	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\
-	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\
-	& NODE_PREFIX ## _iam_a_slave,       /* iam_a_slave */\
-	NODE_PREFIX ## _valueRangeTest,      /* valueRangeTest */\
+	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\//?存储SDO、PDO Objdict的开始位置
+	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ //?存储SDO、PDO Objdict的结束位置
+	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\	//index字条数量
+	& NODE_PREFIX ## _iam_a_slave,       /* iam_a_slave */\	//主从配置， 0表示主机，1表示从机
+	NODE_PREFIX ## _valueRangeTest,      /* valueRangeTest */\//???????函数指针，检测值是否的超出范围
 	\
+	
 	/* SDO, structure s_transfer */\
 	{\
-          REPEAT_SDO_MAX_SIMULTANEOUS_TRANSFERS_TIMES(s_transfer_Initializer)\
+     REPEAT_SDO_MAX_SIMULTANEOUS_TRANSFERS_TIMES(s_transfer_Initializer)\ //SDO 发送结构
 	},\
 	\
 	/* State machine*/\
-	Unknown_state,      /* nodeState */\
-	/* structure s_state_communication */\
+	Unknown_state,      /* nodeState */\		//can节点状态，初始化为未知
+	/* structure s_state_communication */\		//CANopen不同的初始化操作阶段，初始化如下
 	{\
 		0,          /* csBoot_Up */\
 		0,          /* csSDO */\
@@ -231,24 +236,25 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 		0,           /* csPDO */\
 		0           /* csLSS */\
 	},\
-	_initialisation,     /* initialisation */\
-	_preOperational,     /* preOperational */\
-	_operational,        /* operational */\
-	_stopped,            /* stopped */\
-	NULL,                /* NMT node reset callback */\
-	NULL,                /* NMT communications reset callback */\
+	_initialisation,     /* initialisation */\	//函数指针，初始化空，可以覆盖，进入这些状态后调用
+	_preOperational,     /* preOperational */\	//函数指针
+	_operational,        /* operational */\		//函数指针
+	_stopped,            /* stopped */\			//函数指针
+	NULL,                /* NMT node reset callback */\//函数指针，初始化为NULL，节点重置回调
+	NULL,                /* NMT communications reset callback */\//函数指针，初始化为NULL，communications重置回调
 	\
+	
 	/* NMT-heartbeat */\
 	& NODE_PREFIX ## _highestSubIndex_obj1016, /* ConsumerHeartbeatCount */\
 	NODE_PREFIX ## _obj1016,                   /* ConsumerHeartbeatEntries */\
-	NODE_PREFIX ## _heartBeatTimers,           /* ConsumerHeartBeatTimers  */\
-	& NODE_PREFIX ## _obj1017,                 /* ProducerHeartBeatTime */\
-	TIMER_NONE,                                /* ProducerHeartBeatTimer */\
-	_heartbeatError,           /* heartbeatError */\
+	NODE_PREFIX ## _heartBeatTimers,           /* ConsumerHeartBeatTimers  */\ 
+	& NODE_PREFIX ## _obj1017,  /* ProducerHeartBeatTime */\  //生产者发送时间，初始化为obj1017，单位ms
+	TIMER_NONE,                 /* ProducerHeartBeatTimer */\ //定时器，初始化为无定时器，需要周期定时存储定时器
+	_heartbeatError,           /* heartbeatError */\		  //心跳检测出错函数指针，初始化空，可以覆盖，进入这些状态后调用
 	\
-	{REPEAT_NMT_MAX_NODE_ID_TIMES(NMTable_Initializer)},\
-                                                   /* is  well initialized at "Unknown_state". Is it ok ? (FD)*/\
+	{REPEAT_NMT_MAX_NODE_ID_TIMES(NMTable_Initializer)},\ /*NMTable[NMT_MAX_NODE_ID]*/\ //初始化NMT状态，初始化42个状态为unknown
 	\
+	
 	/* NMT-nodeguarding */\
 	TIMER_NONE,                                /* GuardTimeTimer */\
 	TIMER_NONE,                                /* LifeTimeTimer */\
@@ -257,21 +263,24 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	& NODE_PREFIX ## _obj100D,                 /* LifeTimeFactor */\
 	{REPEAT_NMT_MAX_NODE_ID_TIMES(nodeGuardStatus_Initializer)},\
 	\
+	
 	/* SYNC */\
 	TIMER_NONE,                                /* syncTimer */\
 	& NODE_PREFIX ## _obj1005,                 /* COB_ID_Sync */\
 	& NODE_PREFIX ## _obj1006,                 /* Sync_Cycle_Period */\
 	/*& NODE_PREFIX ## _obj1007, */            /* Sync_window_length */\
-	_post_sync,                 /* post_sync */\
-	_post_TPDO,                 /* post_TPDO */\
-	_post_SlaveBootup,			/* post_SlaveBootup */\
-  _post_SlaveStateChange,			/* post_SlaveStateChange */\
+	_post_sync,                 /* post_sync */\//函数指针，初始化空，可以覆盖，proceedSYNC调用
+	_post_TPDO,                 /* post_TPDO */\//发送同步PDO函数指针，初始化空，可以覆盖，proceedSYNC 后调用
+	_post_SlaveBootup,			/* post_SlaveBootup */\//函数指针，初始化空，可以覆盖，后调用
+  _post_SlaveStateChange,		/* post_SlaveStateChange */\//函数指针，初始化空，可以覆盖，后调用
 	\
+	
 	/* General */\
 	0,                                         /* toggle */\
 	NULL,                   /* canSend */\
-	NODE_PREFIX ## _scanIndexOD,                /* scanIndexOD */\
-	_storeODSubIndex,                /* storeODSubIndex */\
+	NODE_PREFIX ## _scanIndexOD,                /* scanIndexOD */\//函数指针，返回对应的字典中的index，需要提前定义(用字典生成器的话，会自动生成)，否则代码无法运行
+	_storeODSubIndex,                /* storeODSubIndex */\//函数指针，初始化空，可以覆盖
+    
     /* DCF concise */\
     NULL,       /*dcf_odentry*/\
 	NULL,		/*dcf_cursor*/\
@@ -280,18 +289,20 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
     0,      /* dcf_size */\
     NULL,   /* dcf_data */\
 	\
+	
 	/* EMCY */\
-	Error_free,                      /* error_state */\
-	sizeof(NODE_PREFIX ## _obj1003) / sizeof(NODE_PREFIX ## _obj1003[0]),      /* error_history_size */\
+	Error_free,                      /* error_state */\	//错误标志，初始化为无错
+	sizeof(NODE_PREFIX ## _obj1003) / sizeof(NODE_PREFIX ## _obj1003[0]), /*error_history_size */\ //历史错误数目
 	& NODE_PREFIX ## _highestSubIndex_obj1003,    /* error_number */\
 	& NODE_PREFIX ## _obj1003[0],    /* error_first_element */\
 	& NODE_PREFIX ## _obj1001,       /* error_register */\
-    & NODE_PREFIX ## _obj1014,       /* error_cobid */\
+    & NODE_PREFIX ## _obj1014,       /* error_cobid */\		//Can-id
 	/* error_data: structure s_errors */\
 	{\
-	REPEAT_EMCY_MAX_ERRORS_TIMES(ERROR_DATA_INITIALIZER)\
-	},\
-	_post_emcy,              /* post_emcy */\
+	REPEAT_EMCY_MAX_ERRORS_TIMES(ERROR_DATA_INITIALIZER)\/*error_data[EMCY_MAX_ERRORS];*/
+	},\ //初始化为全零，EMCY_MAX_ERRORS为8
+	_post_emcy,             /* post_emcy */\//函数指针，初始化空，可以覆盖，proceedEMCY中调用
+	
 	/* LSS */\
 	lss_Initializer\
 }
@@ -446,6 +457,40 @@ CANOpen_App_Task
 #define MSG(...) printf (__VA_ARGS__)
 ```
 
+STM32F10X_HD,DEBUG_ERR_CONSOLE_ON,DEBUG_WAR_CONSOLE_ON
+
+## Objdict
+
+> 与CAN-ID无关，是一个元素为index的数组
+>
+> | -- index 包含了该词条的index值，和对应的subindex数目，还有一个指向subindex的指针
+>
+> ​	| -- subindex 包含了数据内容，数据类型，数据长度等重要参数
+
+https://strongerhuang.blog.csdn.net/article/details/99826973
+
+https://blog.csdn.net/bood123/article/details/49835619  字典配置详解
+
+* objdictedit 是自带的objdict的生活器。需要安装：
+
+```c
+python2.7			      //apt-get install python2.7
+Gnosis xml tools 	//自动安装了
+wxPython				 // python2.7 -mpip install wxPython
+```
+
+
+
+#### First and Last Index
+
+#### Slave or Master
+
+#### ObjdictSize
+
+
+
+![1574923286856](D:\3-motor\0-MOTOR controller\SDO1)
+
 
 
 ## HeartBeat
@@ -476,17 +521,177 @@ Epos4 中并没有SYNC的周期设定，只有对应的0x80标识符的设置，
 
 
 
+* startSYNC中，注册定时器，回调函数为SyncAlarm，
+* SyncAlarm - sendSYNC 发送SYNC帧，调用proceedSYNC
+* proceedSYNC - 调用_sendPDOevent，同步触发
+
+
+
 ## SDO
 
+一个line 是否就是 一个服务器与客户端的连接，有几个客户端，就需要几个line
+
+
+
 CO_data结构 的修改
+
+发送流程：
+
+* 首先是要发送的数据sdo_data,以数组形式存储。
+* Line是发送接收管道，具有数据结构，可以发送SDO帧。
+* objdict是字典结构体
+
+sdo_data  <---->  Line  <---->   objdict
+
+
+
+SDO 发送结构  `struct_s_transfer`   `s_transfer`
+
+初始化为s_transfer_Initializer
+
+```c
+struct struct_s_transfer {
+  UNS8           CliServNbr; /**< The index of the SDO client / server in our OD minus 0x1280 / 0x1200 */
+
+  UNS8           whoami;     /**< Takes the values SDO_CLIENT or SDO_SERVER */
+  UNS8           state;      /**< state of the transmission : Takes the values SDO_... */
+  UNS8           toggle;	
+  UNS32          abortCode;  /**< Sent or received */
+  /**< index and subindex of the dictionary where to store */
+  /**< (for a received SDO) or to read (for a transmit SDO) */
+  UNS16          index;
+  UNS8           subIndex;
+  UNS32          count;      /**< Number of data received or to be sent. */
+  UNS32          offset;     /**< stack pointer of data[]
+                              * Used only to tranfer part of a line to or from a SDO.
+                              * offset is always pointing on the next free cell of data[].
+                              * WARNING s_transfer.data is subject to ENDIANISATION
+                              * (with respect to CANOPEN_BIG_ENDIAN)
+                              */
+  UNS8           data [SDO_MAX_LENGTH_TRANSFER];
+#ifdef SDO_DYNAMIC_BUFFER_ALLOCATION
+  UNS8           *dynamicData;
+  UNS32          dynamicDataSize;
+#endif //SDO_DYNAMIC_BUFFER_ALLOCATION
+                                    
+  UNS8           peerCRCsupport;    /**< True if peer supports CRC */
+  UNS8           blksize;           /**< Number of segments per block with 0 < blksize < 128 */
+  UNS8           ackseq;            /**< sequence number of last segment that was received successfully */
+  UNS32          objsize;           /**< Size in bytes of the object provided by data producer */
+  UNS32          lastblockoffset;   /**< Value of offset before last block */
+  UNS8           seqno;             /**< Last sequence number received OK or transmitted */   
+  UNS8           endfield;          /**< nbr of bytes in last segment of last block that do not contain data */
+  rxStep_t       rxstep;            /**< data consumer receive step - set to true when last segment of a block received */
+  UNS8           tmpData[8];        /**< temporary segment storage */
+
+  UNS8           dataType;   /**< Defined in objdictdef.h Value is visible_string
+                              * if it is a string, any other value if it is not a string,
+                              * like 0. In fact, it is used only if client.
+                              */
+  TIMER_HANDLE   timer;      /**< Time counter to implement a timeout in milliseconds.
+                              * It is automatically incremented whenever
+                              * the line state is in SDO_DOWNLOAD_IN_PROGRESS or
+                              * SDO_UPLOAD_IN_PROGRESS, and reseted to 0
+                              * when the response SDO have been received.
+                              */
+  SDOCallback_t Callback;   /**< The user callback func to be called at SDO transaction end */
+}
+```
+
+---
+
+UNS8 writeNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index,
+		UNS8 subIndex, UNS32 count, UNS8 dataType, void *data, UNS8 useBlockMode)
+
+写入can网格中的某个节点。
+
+### 普通模式和快速模式
+
+* SDO的CAN-ID 由Objdict中定义。属于0x1280中的TestMaster_obj1280_COB_ID_Server值，因为读取时，单片机为从机，网络节点变为服务器。 
+* SDO的CS command specifier 参考
+
+CS确定方法
+
+![SDO1](D:\3-motor\0-MOTOR controller\CANOpen\SDO1.png)
+
+![1574922726748](D:\3-motor\0-MOTOR controller\SDO2)
+
+* SDO can数据字节前四个data[0-3]为UNS16  index,		UNS8 subIndex
+* SDO 剩下四个字节data[4-7]为需要写入的真正数据。长度小于或等于4个字节时，使用SDO expedited；长度超过4个字节，一帧数据传输不完时，使用SDO normal
+* 调用sendSDO发送
 
 
 
 ## PDO
 
+> PDO_status
+
+```c
+UNS8 transmit_type_parameter; 		//PDO传输类型,有同步，非同步，周期和非周期，【事件触发】
+TIMER_HANDLE event_timer;			//定时器
+TIMER_HANDLE inhibit_timer;			//PDO发送间隔定时器
+Message last_message;				//
+```
 
 
 
+```c
+//Index 1800h-19FFh，Transmit PDO Communication Parameter，必须如果支持对应的PDO
+Sub-index 0，Number，unsigned8（2-5），RO，必须
+Sub-index 1，COB-ID used by PDO，unsigned32，RO/RW（如果支持COB-ID配置），必须
+    Bit31：1存在PDO，0不存在PDO
+    Bit30：1 no RTR allowed on this PDO，0 RTR allowed on this PDO
+    Bit29：1 29位ID，0 11位ID
+    Bit29-0：29位ID或11位ID（低11位）
+Sub-index 2，transmission type，unsigned8，RO/RW（如果支持可变的传输类型），必须
+Sub-index 3，inhibit time（not used for RPDO，100us），unsigned16，RW，可选
+Sub-index 4，compatibility entry（保留），unsigned8，RW，可选
+Sub-index 5，event time（not used for RPDO，ms），unsigned16，RW，可选
+
+
+//Index 1A00h-1BFFh，Transmit PDO Mapping Parameter，必须如果支持对应的PDO
+Sub-index 0，Number，unsigned8（0-64），RO/RW如果支持动态映射，必须
+Sub-index 1-40h，PDO Mapping，unsigned32，RW，根据被映射的数量和数据大小来定必须或可选
+    Bit31-16：index
+    Bit15-8：Sub-index
+    Bit7-0：object length
+```
+
+* buildPDO是重点，用于对某个TXPDO，尽力发送的PDO帧
+
+* PDOInit(objdict)
+
+  * 调用 _sendPDOevent()    **精妙的代码**
+    * 触发非同步pdo
+      * 进入状态11
+    * 触发同步pdo
+      * 进入状态3和5和11，多次调用buildPDO ,实现所有的PDO的发送
+
+## NMT
+
+```
+//State
+enum enum_nodeState {
+  Initialisation  = 0x00, 
+  Disconnected    = 0x01,
+  Connecting      = 0x02,
+  Preparing       = 0x02,
+  Stopped         = 0x04,
+  Operational     = 0x05,
+  Pre_operational = 0x7F,
+  Unknown_state   = 0x0F
+};
+```
+
+## Error
+
+```c
+typedef struct {
+	UNS16 errCode;
+	UNS8 errRegMask;
+	UNS8 active;
+} s_errors;
+```
 
 
 

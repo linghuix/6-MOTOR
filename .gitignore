@@ -8,15 +8,7 @@ Epos4-50-15/FWlib/*
 Epos4-50-15/Listing/*
 Epos4-50-15/Output/*
 *.bat
-*.pc
 *.saved_uv4
-*.flyleaf
-*.ini
-*.dbgconf
-*.uvoptx
-*.uvopt
-Epos2-50-5/USER/RTE/_Target_1/RTE_Components.h
-*.lst
 *.o
 *.crf
 *.d

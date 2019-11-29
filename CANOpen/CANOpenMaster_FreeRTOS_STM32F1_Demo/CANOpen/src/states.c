@@ -316,12 +316,39 @@ void setNodeId(CO_Data* d, UNS8 nodeId)
   *d->bDeviceNodeId = nodeId;
 }
 
+
+
+
+/*--------------------------------------*/
+/*--------------------------------------*/
+/*--------------------------------------*/
+/*--------------------------------------*/
+/*--------------------------------------*/
+#include "TestMaster.h"
+#include "HW_epos.h"
+#include "sdo_control.h"
 void _initialisation(CO_Data* d){(void)d;}
+
+
+
 void _preOperational(CO_Data* d){
+	uint32_t data;
+	
     if (!(*(d->iam_a_slave)))
     {
         masterSendNMTstateChange (d, 0, NMT_Reset_Node);
+			
+					//mycode
+				Epos_INIT();
+			/*Epos_Init(&Controller1, NOT_USED, 2);
+			SDO_Write(&Controller1,0x607F,0x00,256);
+			data = SDO_Read(&Controller1,OD_CTRL_WORD,0x00);
+			MSG_WAR(0x1000,"getWrite",data);*/
+				//mycode
     }
+
+
+
 }
 void _operational(CO_Data* d){(void)d;}
 void _stopped(CO_Data* d){(void)d;}
