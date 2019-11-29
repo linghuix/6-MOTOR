@@ -65,15 +65,15 @@ extern Uint32 pos_value_RH;
 
 #define ALL 0
 
-//模式
+//模式  index+interger
 enum E_OBJ_MODE
 {
-    OP_MODE = 0x6060,           //Modes of operation, Sub-index 0x00, INTEGER8
-	  OP_MODE_Read = 0x6061,      //Modes of operation display, Subindex 0x00 ,INTEGER8  RO
+    OP_MODE = 0x60600008,           //Modes of operation, Sub-index 0x00, INTEGER8
+	  OP_MODE_Read = 0x60610008,      //Modes of operation display, Subindex 0x00 ,INTEGER8  RO
     
     CSP = 8,
         //in
-        Target_pos = 0x607A,
+        Target_pos = 0x607A0020,
 	      Position_offset = 0x60B0,
 	      Torque_offset = 0x60B2,
         //out
@@ -91,7 +91,7 @@ enum E_OBJ_MODE
         //in
         CM_SET_VALUE = 0x2030,
         //out
-        Current_Demand_Value = 0x606B,
+        Current_Demand_Value = 0x606B0020,
 
     Diagnostic_Mode = 0xFC,
     Master_Encoder_Mode = 0xFB,
@@ -123,7 +123,7 @@ enum E_OBJ_MODE
     Profile_Velocity_Mode = (uint8_t)3,//目标位置有速度
         //IN
         //Controlword = 0x6040,
-        Target_Velocity = 0x60FF,          //目标位置的速度
+        Target_Velocity = 0x60FF0020,          //目标位置的速度
         //Profile_Acceleration = 0x6083,  //max Acceleration
         //Profile_Deceleration = 0x6084,  //min Deceleration
         //Motion_Profile_Type = 0x6086,
@@ -135,11 +135,11 @@ enum E_OBJ_MODE
     Profile_Position_Mode = (uint8_t)(1),//目标位置为零
         //in 
         //Controlword = 0x6040,         //绝对相对设定等功能
-        Target_Position = 0x607A,
-        Profile_Velocity = 0x6081,      //规划路径的最大速度
-        Profile_Acceleration = 0x6083,  //规划路径max Acceleration
-        Profile_Deceleration = 0x6084,  //min Deceleration
-        Motion_Profile_Type = 0x6086
+        Target_Position = 0x607A0020,
+        Profile_Velocity = 0x60810020,      //规划路径的最大速度
+        Profile_Acceleration = 0x60830020,  //规划路径max Acceleration
+        Profile_Deceleration = 0x60840020,  //min Deceleration
+        Motion_Profile_Type = 0x60860010,
         
         //out
         //Pos_Demand_Value = 0x6062,
@@ -175,45 +175,46 @@ enum E_OBJ_DICTIONARY
         SI_ANALOG1 = 0x01,  //analog input 1, Index 0x207C, Sub-index 0x01,Type INTEGER16, analog input 1 [mV].
         SI_ANALOG2 = 0x02,  //analog input 2, Index 0x207C, Sub-index 0x02,Type INTEGER16,The voltage measured at analog input 2 [mV].
 
-    Max_gear_input_speed = 0x3003,//Subindex 0x03, UNSIGNED32
+    Max_gear_input_speed = 0x30030020,//Subindex 0x03, UNSIGNED32
 		
-		OD_CTRL_WORD = 0x6040,      /*controlword, UNSIGNED16,
+		OD_CTRL_WORD = 0x60400010,      /*controlword, UNSIGNED16,
                                   bit6 Operation mode specific: 0: Abs;  1: rel
                                  */
-    OD_STATUS_WORD = 0x6041, //Statusword, Sub-index 0x00, UNSIGNED16
+    OD_STATUS_WORD = 0x60410010, //Statusword, Sub-index 0x00, UNSIGNED16
 
-    OD_ACTUAL_POS = 0x6064,     //actual position, Sub-index 0x00, INTEGER32,
+    OD_ACTUAL_POS = 0x60640020,     //actual position, Sub-index 0x00, INTEGER32,
 
-    OD_Following_ERR_window = 0x6065,   //Following error window, Sub-index 0x00, UNSIGNED32
+    OD_Following_ERR_window = 0x60650020,   //Following error window, Sub-index 0x00, UNSIGNED32
 		
     OD_Position_Window = 0x6067,//实际意义参考 firmware pdf
     Pos_Window_Time = 0x6068,   //进入Position_Window的时间，单位ms
     
     
-    OD_CURRENT_VAL = 0x6078,    //Current Actual Value, Index 0x6078, Subindex 0x00,Type INTEGER16
-    OD_TARGET_POS = 0x607A,     /*target position, Sub-index 0x00, INTEGER32,
+    OD_CURRENT_VAL = 0x60780020,    //Current Actual Value, Index 0x6078, Subindex 0x00,Type INTEGER16
+    OD_TARGET_POS = 0x607A0020,     /*target position, Sub-index 0x00, INTEGER32,
                                   units steps (quadcounts = 4*Encoder Counts / Revolution)*/
                                   
-    Soft_P_Limit = 0x607D,  //软件限制
+    Soft_P_Limit_Min = 0x607D0120,  //软件限制
+		Soft_P_Limit_Max = 0x607D0220,  //软件限制
     
-    OD_MAX_P_VELOCITY = 0x607F, //UNSIGNED32, [1, 25000]
+    OD_MAX_P_VELOCITY = 0x607F0020, //UNSIGNED32, [1, 25000]
 
-	  OD_MAX_MOTOR_SPEED = 0x6080, //0x00, UNSIGNED32,
+	  OD_MAX_MOTOR_SPEED = 0x60800020, //0x00, UNSIGNED32,
 
     OD_P_VELOCITY = 0x6081,     //Profile velocity, Sub-index 0x00, UNSIGNED32, Unit:rpm
-    OD_P_ACCELERATION = 0x6083, //profile acceleration, Sub-index 0x00,UNSIGNED32
-    OD_P_DECELERATION = 0x6084, //profile deceleration, Sub-index 0x00,UNSIGNED32
-    OD_QS_DECELERATION =  0x6085, //quick stop deceleration, Sub-index 0x00, UINT32
+    OD_P_ACCELERATION = 0x60830020, //profile acceleration, Sub-index 0x00,UNSIGNED32
+    OD_P_DECELERATION = 0x60840020, //profile deceleration, Sub-index 0x00,UNSIGNED32
+    OD_QS_DECELERATION =  0x60850020, //quick stop deceleration, Sub-index 0x00, UINT32
     
-    OD_Motion_Profile_Type = 0x6086,
+    OD_Motion_Profile_Type = 0x60860010,
     
     OD_Interpolation_Sub_Mode = 0x60C0,
     Interpolation_Time_Period = 0x60C2,
     Interpolation_Data_Configuration = 0x60C4,
     
-    OD_Max_Acceleration = 0x60C5,
+    OD_Max_Acceleration = 0x60C50020,
 
-    OD_TARGET_VELOCITY = 0x60FF,  //target velocity, Sub-index 0x00, INTEGER32
+    OD_TARGET_VELOCITY = 0x60FF0020,  //target velocity, Sub-index 0x00, INTEGER32
     OD_MOTOR_DATA = 0x3001  //motor data, number of entries 0x06,具体含义参照firmware
 };
 

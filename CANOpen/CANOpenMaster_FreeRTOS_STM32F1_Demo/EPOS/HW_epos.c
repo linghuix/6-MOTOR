@@ -10,7 +10,7 @@
  * 调用  ：
  */
 Uint8 NODE_ID = 0;                          //EPOS的节点ID
-Uint8 NODE_ID1 = 1;
+Uint8 NODE_ID1 = 2;
 
 Epos Controller,Controller1;        				//控制器对象
 
@@ -23,7 +23,7 @@ void Epos_INIT()
     printf("Epos_SInit\r\n");
     Epos_ParamInit(&Controller1);
     printf("\r\ninitial EPOS done!\r\n\r\n");
-		Epos_Delay(500);    
+		Epos_Delay(500);
 	
     
     //******** 控制模式设置 *******

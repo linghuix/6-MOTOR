@@ -15,10 +15,16 @@ int NEST = 0;           //嵌套层数
 	*/
 
 
-uint32_t SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
+uint8_t SDO_Write(Epos* epos,Uint32 Index_Type,Uint8 SubIndex,Uint32 param)
 {
 	UNS32 abortCode;
-	writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, 4, uint32, &param ,0);	//向can网络中的节点发送
+	UNS16 Index = Index_Type>>16;
+	UNS32 Size = (Index_Type&(UNS32)0xFF)>>3;
+	UNS8 Type;
+	if(Size == 4){Type = uint32;}
+	if(Size == 2){Type = uint16;}
+	if(Size == 1){Type = uint8;}
+	abortCode = writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Size, Type, &param ,0);	//向can网络中的节点发送
 	while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS );
 	return abortCode;
 }
@@ -122,13 +128,19 @@ void SDO_Write(Epos* epos,Uint16 Index,Uint8 SubIndex,Uint32 param)
 
 
 /**** 发送CAN SDO读报文，并接受返回值 ***/
-Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
+Uint32 SDO_Read(Epos* epos,Uint32 Index_Type,Uint8 SubIndex)
 {	
 	UNS32 data;
-	UNS32 size = 4;	//data字节数
 	UNS32 abortCode;
-	readNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, uint32, 0);
-	while(getReadResultNetworkDict(&TestMaster_Data, epos->node_ID, &data, &size, &abortCode) == SDO_UPLOAD_IN_PROGRESS);
+	UNS16 Index = Index_Type>>16;
+	UNS32 Size = (Index_Type&(UNS32)0xFF)>>3;
+	UNS8 Type;
+	if(Size == 4){Type = uint32;}
+	if(Size == 2){Type = uint16;}
+	if(Size == 1){Type = uint8;}
+	
+	readNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Type, 0);
+	while(getReadResultNetworkDict(&TestMaster_Data, epos->node_ID, &data, &Size, &abortCode) == SDO_UPLOAD_IN_PROGRESS);
 	return data;
 }
 /*Uint32 SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex)
