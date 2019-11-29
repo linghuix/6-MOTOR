@@ -4,6 +4,9 @@
 #include "TestMaster.h"
 #include "sdo_control.h"
 
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "task.h"
 /***** 
 write parameter to Object Dictionary through CAN use SDO messages
 ******/
@@ -24,9 +27,9 @@ uint8_t SDO_Write(Epos* epos,Uint32 Index_Type,Uint8 SubIndex,Uint32 param)
 	if(Size == 4){Type = uint32;}
 	if(Size == 2){Type = uint16;}
 	if(Size == 1){Type = uint8;}
-	abortCode = writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Size, Type, &param ,0);	//向can网络中的节点发送
-	while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS );
-	return abortCode;
+	while(writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Size, Type, &param ,0)){vTaskDelay(1); };	//向can网络中的节点发送
+	//while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS );
+	return 0;
 }
 
 	/*
