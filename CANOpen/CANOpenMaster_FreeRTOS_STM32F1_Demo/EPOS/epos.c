@@ -29,7 +29,7 @@ void Epos_ParamInit(Epos* epos)
 
     SDO_Write(epos, OD_Following_ERR_window, 0x00, MAX_F_ERR);     //最大误差设置
 
-    SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, MAX_P_V);   //最大速度
+    SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, 1000);//MAX_P_V);   //最大速度
 
     SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度
 
@@ -177,8 +177,8 @@ void Epos_setMode(Epos* epos, Uint16 mode){
 				
 					      SDO_Write(epos, OD_Following_ERR_window , 0x00, 0);
 				
-                SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
-                SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
+                SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);                //-2147483648
+                SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);                //2147483647
 				
                 break;
         
@@ -205,8 +205,8 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 break;
                 
         case(Profile_Velocity_Mode):		//CONFIGURATION PARAMETERS
-                SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
-                SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
+                SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);                //-2147483648
+                SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);                //2147483647
 				
                 SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00,3000);                 //最大速度 Maximal Profile Velocity 
 	              SDO_Write(epos, OD_QS_DECELERATION, 0x00, 50000);              //快速停止负加速度			
@@ -224,8 +224,8 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 SDO_Write(epos, OD_Interpolation_Sub_Mode, 0x00,(Uint32)(-1));//always -1 cubic spline interpolation (PVT)
                 SDO_Write(epos, Interpolation_Time_Period, 0x01,1);//always 1
                 SDO_Write(epos, Interpolation_Time_Period, 0x02,(Uint32)(-3));//always -3  插值周期 10^-3s
-                SDO_Write(epos, Soft_P_Limit, 0x01, 0x80000000);                //-2147483648
-                SDO_Write(epos, Soft_P_Limit, 0x02, 0x7FFFFFFF);                //2147483647
+                SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);                //-2147483648
+                SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);                //2147483647
                 //SDO_Write(epos,OD_Position_Window, 0x00,4294967295);             //关闭 position window 
                 SDO_Write(epos, Pos_Window_Time, 0x00, 0);
                 break;

@@ -5,25 +5,26 @@
 #include "sdo_control.h"
 
 /*
- * 函数名：接收传感器数据
- * 描述  ：
- * 调用  ：
+ * 函数名：接收传感器数�?
+ * 描述  �?
+ * 调用  �?
  */
-Uint8 NODE_ID = 0;                          //EPOS的节点ID
-Uint8 NODE_ID1 = 1;
 
-Epos Controller,Controller1;        				//控制器对象
+Uint8 NODE_ID = 0;                          //EPOS�Ľڵ�ID
+Uint8 NODE_ID1 = 2;
+
+Epos Controller,Controller1;        				//控制器对�?
 
 void Epos_INIT()
 {
-    Epos_Init(&Controller1, NOT_USED, NODE_ID1);	//初始化最大加速度，速度，跟踪误差，波特率1M/s，
+    Epos_Init(&Controller1, NOT_USED, NODE_ID1);	//初始化最大加速度，速度，跟踪误差，波特�?M/s�?
 	
 	
-    // 通过canopen设定EPOS控制器参数
+    // 通过canopen设定EPOS控制器参�?
     printf("Epos_SInit\r\n");
     Epos_ParamInit(&Controller1);
     printf("\r\ninitial EPOS done!\r\n\r\n");
-		Epos_Delay(500);    
+		Epos_Delay(500);
 	
     
     //******** 控制模式设置 *******
@@ -66,7 +67,7 @@ void Epos_PosSet(Epos* epos, Uint32 pos){
 }
 
 
-/**控制器启动 */
+/**控制器启�?*/
 void Epos_Start(void){
 	
     //******** EPOS basic COMMANDING PARAMETERS *******
@@ -84,8 +85,8 @@ void Epos_Start(void){
 
 /*
  * 函数名：实时控制任务
- * 描述  ：
- * 调用  ：
+ * 描述  �?
+ * 调用  �?
  */
 /**实现速度摇摆控制 */
 void speed_Task(void){
@@ -130,9 +131,9 @@ void Epos_ControlTask(void){
 
 
 /*
- * 函数名：接收传感器数据
- * 描述  ：
- * 调用  ：
+ * 函数名：接收传感器数�?
+ * 描述  �?
+ * 调用  �?
  */
 Uint32 status;
 Uint32 velocity, speed;
@@ -167,15 +168,15 @@ void State(void){
 
 
 /*
- * 函数名：接收传感器数据
- * 描述  ：
- * 调用  ：
+ * 函数名：接收传感器数�?
+ * 描述  �?
+ * 调用  �?
  */
 #define PI 3.1415
 
-__IO uint32_t flag = 0xff;          //用于标志是否接收到数据，在中断函数中赋值
+__IO uint32_t flag = 0xff;          //用于标志是否接收到数据，在中断函数中赋�?
 UNS32 pos=0;                       //电机位置
-int x=0;                            //角度自变量
+int x=0;                            //角度自变�?
 int angle_sensor;
 double ang[51]  = {6.464,7.102,8.449,10.158,11.772,12.992,13.599,13.527,12.995,12.22,11.283,10.256,9.193,8.152,7.174,6.271,5.442,4.702,4.079,3.597,3.299,3.222,
     3.418,3.947,4.855,6.2,8.084,10.621,13.945,18.181,23.361,29.341,35.748,42.002,47.489,51.734,54.476,55.651,55.3,53.502,50.384,46.118,40.922,35.037,28.801,22.629,

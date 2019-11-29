@@ -7,9 +7,9 @@
 
 extern CanRxMsg RxMessage;
 
-uint32_t SDO_Write(Epos* epos1,Uint16 Index,Uint8 SubIndex,Uint32 param);
+uint8_t SDO_Write(Epos* epos1,Uint32 Index_Type,Uint8 SubIndex,Uint32 param);
 //void SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex);
-uint32_t SDO_Read(Epos* epos,Uint16 Index,Uint8 SubIndex);
+uint32_t SDO_Read(Epos* epos,Uint32 Index_Type,Uint8 SubIndex);
 
 #endif
 
