@@ -70,7 +70,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                      };
 
 /* index 0x1005 :   SYNC COB ID */
-                    UNS32 TestMaster_obj1005 = 0x40000080 ;   /* start */
+                    UNS32 TestMaster_obj1005 = 0x00000080 ;   /* start 0x40000080*/
 
 /* index 0x1006 :   Communication / Cycle Period */
                     UNS32 TestMaster_obj1006 = 0xF4240;   /* 1000000us */
@@ -89,7 +89,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     UNS32 TestMaster_obj1016[]={0};
 
 /* index 0x1017 :   Producer Heartbeat Time. */
-                    UNS16 TestMaster_obj1017 = 0x3E8;	/* 1000ms */
+                    UNS16 TestMaster_obj1017 = 0;	/* 0x3E81000ms */
                     subindex TestMaster_Index1017[] = 
                      {
                        { RW, uint16, sizeof (UNS16), (void*)&TestMaster_obj1017, NULL }

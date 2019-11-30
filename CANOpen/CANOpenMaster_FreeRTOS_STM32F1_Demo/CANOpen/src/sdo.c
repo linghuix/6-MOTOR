@@ -1352,7 +1352,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 				if (!err) {
 					/* The line *must* be released by the core program. */
 					StopSDO_TIMER(line)
-						d->transfers[line].state = SDO_ABORTED_RCV;
+					d->transfers[line].state = SDO_ABORTED_RCV;
 					d->transfers[line].abortCode = abortCode;
 					MSG_WAR(0x3AB0, "SD0. Received SDO abort. Line state ABORTED. Code : ", abortCode);
 					if(d->transfers[line].Callback) (*d->transfers[line].Callback)(d,nodeId);
@@ -2012,6 +2012,7 @@ INLINE UNS8 _writeNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index,
 	    /* Send the SDO to the server. Initiate download, cs=1. */
 	    if (count <= 4) { /* Expedited transfer */
 		    buf[0] = (UNS8)((1 << 5) | ((4 - count) << 2) | 3);
+				//buf[0] = (UNS8)((1 << 5) |  2);
 		    for (i = 4 ; i < 8 ; i++)
 			    buf[i] = d->transfers[line].data[i - 4];
 		    d->transfers[line].offset = count;

@@ -31,7 +31,7 @@ void Epos_ParamInit(Epos* epos)
 
     SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, 1000);//MAX_P_V);   //最大速度
 
-    SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度
+    SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度  无效参数
 
     SDO_Write(epos, OD_P_DECELERATION, 0x00, epos->dec); //负加速度
 

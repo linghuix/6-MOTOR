@@ -10,8 +10,9 @@ CANOpen_App_Task
     setState(&TestMaster_Data, Initialisation)
         switchCommunicationState
             SDO,SYNC,LifeGuard,csEmergency,PDO
-           
-           
+
+
+​           
 
 // 神奇的宏定义，这样只要用 
 // StartOrStop(csSDO,	None,		resetSDO(d)) 就可以调用了

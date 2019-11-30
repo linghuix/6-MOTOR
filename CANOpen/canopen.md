@@ -212,8 +212,8 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//发送PDO通信参数的数组
 	NULL,                                /* RxPDO_EventTimers */\
 	_RxPDO_EventTimers_Handler,          /* RxPDO_EventTimers_Handler */\
-	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\//?存储SDO、PDO Objdict的开始位置
-	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ //?存储SDO、PDO Objdict的结束位置
+	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\//?存储SDO、PDO Objdict的开始位置(包含)
+	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ //?存储SDO、PDO Objdict的结束位置(包含)
 	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\	//index字条数量
 	& NODE_PREFIX ## _iam_a_slave,       /* iam_a_slave */\	//主从配置， 0表示主机，1表示从机
 	NODE_PREFIX ## _valueRangeTest,      /* valueRangeTest */\//???????函数指针，检测值是否的超出范围

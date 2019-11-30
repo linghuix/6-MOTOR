@@ -16,7 +16,10 @@ int NEST = 0;           //嵌套层数
 /**
 	*
 	*/
-
+void _sdocallback(CO_Data* d, UNS8 nodeId){
+	MSG_WAR(0x0000, "sdocallback in nodeid: ", nodeId);
+	resetSDO(d);
+}
 
 uint8_t SDO_Write(Epos* epos,Uint32 Index_Type,Uint8 SubIndex,Uint32 param)
 {
@@ -27,8 +30,10 @@ uint8_t SDO_Write(Epos* epos,Uint32 Index_Type,Uint8 SubIndex,Uint32 param)
 	if(Size == 4){Type = uint32;}
 	if(Size == 2){Type = uint16;}
 	if(Size == 1){Type = uint8;}
-	while(writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Size, Type, &param ,0)){vTaskDelay(1); };	//向can网络中的节点发送
-	//while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS );
+	_writeNetworkDict(&TestMaster_Data,epos->node_ID ,Index, SubIndex, Size, Type, &param, _sdocallback, 1, 0);	//向can网络中的节点发送
+	while( getWriteResultNetworkDict(&TestMaster_Data,epos->node_ID ,&abortCode) == SDO_DOWNLOAD_IN_PROGRESS ){
+		vTaskDelay(500);
+	}
 	return 0;
 }
 

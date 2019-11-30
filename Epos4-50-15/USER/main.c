@@ -29,6 +29,6 @@ int main(void){
     
     while(1){
 			//Epos_ReceiveDate();
-			Epos_ControlTask();
+			//Epos_ControlTask();
     }
 }
