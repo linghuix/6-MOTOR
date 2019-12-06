@@ -79,6 +79,22 @@ UNS8 accessDictionaryError(UNS16 index, UNS8 subIndex,
   return 0;
 }
 
+/** 
+* @ingroup od
+* @brief 读取字典中的值到pDestData中
+* @param OD Pointer to a CAN object data structure
+ * @param wIndex The index in the object dictionary where you want to read an entry
+* @param bSubindex The subindex of the Index.
+* @param *pDestData where the value of this object dictionary entry should be copied
+* @param pExpectedSize This function writes the size of the copied value (in Byte)
+*					   into this variable.
+* @param *pDataType Pointer to the type of the data. See objdictdef.h
+* @param checkAccess Flag that indicate if a check rights must be perfomed (0 : no , other than 0 : yes)
+* @return 
+* - OD_SUCCESSFUL is returned upon success. 
+* - SDO abort code is returned if error occurs . (See file def.h)
+*/
+
 UNS32 _getODentry( CO_Data* d,
                    UNS16 wIndex,
                    UNS8 bSubindex,

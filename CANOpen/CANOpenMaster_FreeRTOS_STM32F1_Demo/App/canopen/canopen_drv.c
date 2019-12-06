@@ -1,16 +1,16 @@
 /**
   ******************************************************************************
-  * @ÎÄ¼şÃû     £º canopen_drv.c
-  * @×÷Õß       £º strongerHuang
-  * @°æ±¾       £º V1.0.0
-  * @ÈÕÆÚ       £º 2018Äê11ÔÂ14ÈÕ
-  * @ÕªÒª       £º CANOpenÇı¶¯Ô´ÎÄ¼ş
+  * @æ–‡ä»¶å     ï¼š canopen_drv.c
+  * @ä½œè€…       ï¼š strongerHuang
+  * @ç‰ˆæœ¬       ï¼š V1.0.0
+  * @æ—¥æœŸ       ï¼š 2018å¹´11æœˆ14æ—¥
+  * @æ‘˜è¦       ï¼š CANOpené©±åŠ¨æºæ–‡ä»¶
   ******************************************************************************/
 /*----------------------------------------------------------------------------
-  ¸üĞÂÈÕÖ¾:
-  2018-11-14 V1.0.0:³õÊ¼°æ±¾
+  æ›´æ–°æ—¥å¿—:
+  2018-11-14 V1.0.0:åˆå§‹ç‰ˆæœ¬
   ----------------------------------------------------------------------------*/
-/* °üº¬µÄÍ·ÎÄ¼ş --------------------------------------------------------------*/
+/* åŒ…å«çš„å¤´æ–‡ä»¶ --------------------------------------------------------------*/
 #include "canopen_drv.h"
 #include "bsp_can.h"
 #include "bsp_timer.h"
@@ -18,39 +18,39 @@
 #include "TestMaster.h"
 
 
-/* ¾²Ì¬±äÁ¿ ------------------------------------------------------------------*/
-static xQueueHandle xCANSendQueue = NULL;        //CAN·¢ËÍ¶ÓÁĞ
-static xQueueHandle xCANRcvQueue = NULL;         //CAN½ÓÊÕ¶ÓÁĞ
+/* é™æ€å˜é‡ ------------------------------------------------------------------*/
+static xQueueHandle xCANSendQueue = NULL;        //CANå‘é€é˜Ÿåˆ—
+static xQueueHandle xCANRcvQueue = NULL;         //CANæ¥æ”¶é˜Ÿåˆ—
 
-/* ¶¨Ê±Æ÷TIMÏà¹Ø±äÁ¿ */
+/* å®šæ—¶å™¨TIMç›¸å…³å˜é‡ */
 static TIMEVAL last_counter_val = 0;
 static TIMEVAL elapsed_time = 0;
 
 
-/* ¾²Ì¬ÉêÃ÷ ------------------------------------------------------------------*/
+/* é™æ€ç”³æ˜ ------------------------------------------------------------------*/
 static void CANSend_Task(void *pvParameters);
 static void CANRcv_Task(void *pvParameters);
 
 
 /************************************************
-º¯ÊıÃû³Æ £º CANOpen_Driver_Init
-¹¦    ÄÜ £º CANOpenÇı¶¯³õÊ¼»¯
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANOpen_Driver_Init
+åŠŸ    èƒ½ ï¼š CANOpené©±åŠ¨åˆå§‹åŒ–
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANOpen_Driver_Init(void)
 {
   BaseType_t xReturn;
 
-  /* ´´½¨¶ÓÁĞ */
+  /* åˆ›å»ºé˜Ÿåˆ— */
   if(xCANSendQueue == NULL)
   {
     xCANSendQueue = xQueueCreate(CANTX_QUEUE_LEN, sizeof(CanTxMsg));
     if(xCANSendQueue == NULL)
     {
       printf("CANSendQueue create failed");
-      return;                                    //´´½¨·¢ËÍ¶ÓÁĞÊ§°Ü
+      return;                                    //åˆ›å»ºå‘é€é˜Ÿåˆ—å¤±è´¥
     }
   }
 
@@ -60,47 +60,47 @@ void CANOpen_Driver_Init(void)
     if(xCANRcvQueue == NULL)
     {
       printf("CANRcvQueue create failed");
-      return;                                    //´´½¨½ÓÊÕ¶ÓÁĞÊ§°Ü
+      return;                                    //åˆ›å»ºæ¥æ”¶é˜Ÿåˆ—å¤±è´¥
     }
   }
 
-  /* ´´½¨ÈÎÎñ */
+  /* åˆ›å»ºä»»åŠ¡ */
   xReturn = xTaskCreate(CANSend_Task, "CANSend_Task", CANTX_STACK_SIZE, NULL, CANTX_TASK_PRIORITY, NULL);
   if(pdPASS != xReturn)
   {
     printf("CANSend_Task create failed");
-    return;                                      //´´½¨·¢ËÍÈÎÎñÊ§°Ü
+    return;                                      //åˆ›å»ºå‘é€ä»»åŠ¡å¤±è´¥
   }
 
   xReturn = xTaskCreate(CANRcv_Task, "CANRcv_Task", CANRX_STACK_SIZE, NULL, CANRX_TASK_PRIORITY, NULL);
   if(pdPASS != xReturn)
   {
     printf("CANRcv_Task create failed");
-    return;                                      //´´½¨½ÓÊÕÈÎÎñÊ§°Ü
+    return;                                      //åˆ›å»ºæ¥æ”¶ä»»åŠ¡å¤±è´¥
   }
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANSend_Date
-¹¦    ÄÜ £º CAN·¢ËÍÊı¾İ
-²Î    Êı £º TxMsg --- ·¢ËÍ(CAN)ÏûÏ¢
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANSend_Date
+åŠŸ    èƒ½ ï¼š CANå‘é€æ•°æ®
+å‚    æ•° ï¼š TxMsg --- å‘é€(CAN)æ¶ˆæ¯
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANSend_Date(CanTxMsg TxMsg)
 {
   if(xQueueSend(xCANSendQueue, &TxMsg, 100) != pdPASS)
-  {                                              //¼ÓÈë¶ÓÁĞÊ§°Ü
+  {                                              //åŠ å…¥é˜Ÿåˆ—å¤±è´¥
     printf("CANSendQueue failed");
   }
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANSend_Task
-¹¦    ÄÜ £º CAN·¢ËÍÓ¦ÓÃÈÎÎñ³ÌĞò
-²Î    Êı £º pvParameters --- ¿ÉÑ¡²ÎÊı
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANSend_Task
+åŠŸ    èƒ½ ï¼š CANå‘é€åº”ç”¨ä»»åŠ¡ç¨‹åº
+å‚    æ•° ï¼š pvParameters --- å¯é€‰å‚æ•°
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 static void CANSend_Task(void *pvParameters)
 {
@@ -108,12 +108,12 @@ static void CANSend_Task(void *pvParameters)
 
   for(;;)
   {
-    /* µÈ´ı½ÓÊÕÓĞĞ§Êı¾İ°ü */
+    /* ç­‰å¾…æ¥æ”¶æœ‰æ•ˆæ•°æ®åŒ… */
     if(xQueueReceive(xCANSendQueue, &TxMsg, 100) == pdTRUE)
     {
       if(CAN_Transmit(CANx, &TxMsg) == CAN_NO_MB)
       {
-        vTaskDelay(1);                           //µÚÒ»´Î·¢ËÍÊ§°Ü, ÑÓÊ±1¸öµÎ´ğ, ÔÙ´Î·¢ËÍ
+        vTaskDelay(1);                           //ç¬¬ä¸€æ¬¡å‘é€å¤±è´¥, å»¶æ—¶1ä¸ªæ»´ç­”, å†æ¬¡å‘é€
         CAN_Transmit(CANx, &TxMsg);
       }
     }
@@ -121,11 +121,11 @@ static void CANSend_Task(void *pvParameters)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANRcv_DateFromISR
-¹¦    ÄÜ £º CAN½ÓÊÕÊı¾İ
-²Î    Êı £º RxMsg --- ½ÓÊÕÊı¾İ(¶ÓÁĞ)
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANRcv_DateFromISR
+åŠŸ    èƒ½ ï¼š CANæ¥æ”¶æ•°æ®
+å‚    æ•° ï¼š RxMsg --- æ¥æ”¶æ•°æ®(é˜Ÿåˆ—)
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANRcv_DateFromISR(CanRxMsg *RxMsg)
 {
@@ -139,11 +139,11 @@ void CANRcv_DateFromISR(CanRxMsg *RxMsg)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANRcv_Task
-¹¦    ÄÜ £º CAN½ÓÊÕÓ¦ÓÃÈÎÎñ³ÌĞò
-²Î    Êı £º pvParameters --- ¿ÉÑ¡²ÎÊı
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANRcv_Task
+åŠŸ    èƒ½ ï¼š CANæ¥æ”¶åº”ç”¨ä»»åŠ¡ç¨‹åº
+å‚    æ•° ï¼š pvParameters --- å¯é€‰å‚æ•°
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 static void CANRcv_Task(void *pvParameters)
 {
@@ -159,30 +159,30 @@ static void CANRcv_Task(void *pvParameters)
       msg.cob_id = RxMsg.StdId;                  //CAN-ID
 
       if(CAN_RTR_REMOTE == RxMsg.RTR)
-        msg.rtr = 1;                             //Ô¶³ÌÖ¡
+        msg.rtr = 1;                             //è¿œç¨‹å¸§
       else
-        msg.rtr = 0;                             //Êı¾İÖ¡
+        msg.rtr = 0;                             //æ•°æ®å¸§
 
-      msg.len = (UNS8)RxMsg.DLC;                 //³¤¶È
+      msg.len = (UNS8)RxMsg.DLC;                 //é•¿åº¦
 
-      for(i=0; i<RxMsg.DLC; i++)                 //Êı¾İ
+      for(i=0; i<RxMsg.DLC; i++)                 //æ•°æ®
         msg.data[i] = RxMsg.Data[i];
 
       TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, DISABLE);
-      canDispatch(&TestMaster_Data, &msg);       //µ÷ÓÃĞ­ÒéÏà¹Ø½Ó¿Ú
+      canDispatch(&TestMaster_Data, &msg);       //è°ƒç”¨åè®®ç›¸å…³æ¥å£
       TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, ENABLE);
     }
   }
 }
 
-/********************************** CANOpen½Ó¿Úº¯Êı(Ğè×Ô¼ºÊµÏÖ) **********************************/
+/********************************** CANOpenæ¥å£å‡½æ•°(éœ€è‡ªå·±å®ç°) **********************************/
 /************************************************
-º¯ÊıÃû³Æ £º canSend
-¹¦    ÄÜ £º CAN·¢ËÍ
-²Î    Êı £º notused --- Î´Ê¹ÓÃ²ÎÊı
-            m --------- ÏûÏ¢²ÎÊı
-·µ »Ø Öµ £º 0:Ê§°Ü  1:³É¹¦
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š canSend
+åŠŸ    èƒ½ ï¼š CANå‘é€
+å‚    æ•° ï¼š notused --- æœªä½¿ç”¨å‚æ•°
+            m --------- æ¶ˆæ¯å‚æ•°
+è¿” å› å€¼ ï¼š 0:å¤±è´¥  1:æˆåŠŸ
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 unsigned char canSend(CAN_PORT notused, Message *m)
 {
@@ -202,11 +202,11 @@ unsigned char canSend(CAN_PORT notused, Message *m)
   for(i=0; i<m->len; i++)
       TxMsg.Data[i] = m->data[i];
 
-  /* ÅĞ¶ÏÊÇ·ñÔÚÖ´ĞĞÖĞ¶Ï */
+  /* åˆ¤æ–­æ˜¯å¦åœ¨æ‰§è¡Œä¸­æ–­ */
   if(0 == __get_CONTROL())
   {
     if(xQueueSendFromISR(xCANSendQueue, &TxMsg, &xHigherPriorityTaskWoken) != pdPASS)
-    {                                            //¼ÓÈë¶ÓÁĞÊ§°Ü
+    {                                            //åŠ å…¥é˜Ÿåˆ—å¤±è´¥
       return 0xFF;
     }
     portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
@@ -214,7 +214,7 @@ unsigned char canSend(CAN_PORT notused, Message *m)
   else
   {
     if(xQueueSend(xCANSendQueue, &TxMsg, 100) != pdPASS)
-    {                                            //¼ÓÈë¶ÓÁĞÊ§°Ü
+    {                                            //åŠ å…¥é˜Ÿåˆ—å¤±è´¥
       return 0xFF;
     }
   }
@@ -223,11 +223,11 @@ unsigned char canSend(CAN_PORT notused, Message *m)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º setTimer
-¹¦    ÄÜ £º Set the timer for the next alarm.
-²Î    Êı £º value --- ²ÎÊı
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š setTimer
+åŠŸ    èƒ½ ï¼š Set the timer for the next alarm.
+å‚    æ•° ï¼š value --- å‚æ•°
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void setTimer(TIMEVAL value)
 {
@@ -240,11 +240,11 @@ void setTimer(TIMEVAL value)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º getElapsedTime
-¹¦    ÄÜ £º Return the elapsed time to tell the Stack how much time is spent since last call.
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º (ÏûÊÅµÄ)Ê±¼ä
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š getElapsedTime
+åŠŸ    èƒ½ ï¼š Return the elapsed time to tell the Stack how much time is spent since last call.
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š (æ¶ˆé€çš„)æ—¶é—´
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 TIMEVAL getElapsedTime(void)
 {
@@ -259,11 +259,11 @@ TIMEVAL getElapsedTime(void)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º TIMx_DispatchFromISR
-¹¦    ÄÜ £º ¶¨Ê±µ÷¶È(´Ó¶¨Ê±Æ÷ÖĞ¶Ï)
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š TIMx_DispatchFromISR
+åŠŸ    èƒ½ ï¼š å®šæ—¶è°ƒåº¦(ä»å®šæ—¶å™¨ä¸­æ–­)
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void TIMx_DispatchFromISR(void)
 {

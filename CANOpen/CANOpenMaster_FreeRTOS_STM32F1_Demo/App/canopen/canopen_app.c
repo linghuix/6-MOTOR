@@ -1,31 +1,31 @@
 /**
   ******************************************************************************
-  * @ÎÄ¼şÃû     £º canopen_app.c
-  * @×÷Õß       £º strongerHuang
-  * @°æ±¾       £º V1.0.0
-  * @ÈÕÆÚ       £º 2018Äê11ÔÂ14ÈÕ
-  * @ÕªÒª       £º CANOpenÓ¦ÓÃ³ÌĞòÔ´ÎÄ¼ş
+  * @æ–‡ä»¶å     ï¼š canopen_app.c
+  * @ä½œè€…       ï¼š strongerHuang
+  * @ç‰ˆæœ¬       ï¼š V1.0.0
+  * @æ—¥æœŸ       ï¼š 2018å¹´11æœˆ14æ—¥
+  * @æ‘˜è¦       ï¼š CANOpenåº”ç”¨ç¨‹åºæºæ–‡ä»¶
   ******************************************************************************/
 /*----------------------------------------------------------------------------
-  ¸üĞÂÈÕÖ¾:
-  2018-11-14 V1.0.0:³õÊ¼°æ±¾
+  æ›´æ–°æ—¥å¿—:
+  2018-11-14 V1.0.0:åˆå§‹ç‰ˆæœ¬
   ----------------------------------------------------------------------------*/
-/* °üº¬µÄÍ·ÎÄ¼ş --------------------------------------------------------------*/
+/* åŒ…å«çš„å¤´æ–‡ä»¶ --------------------------------------------------------------*/
 #include "canopen_app.h"
 #include "canopen_drv.h"
 #include "TestMaster.h"
 
 
-/* ¾²Ì¬ÉêÃ÷ ------------------------------------------------------------------*/
+/* é™æ€ç”³æ˜ ------------------------------------------------------------------*/
 static void CANOpen_App_Task(void *pvParameters);
 
 
 /************************************************
-º¯ÊıÃû³Æ £º CANOpen_App_Init
-¹¦    ÄÜ £º CANOpenÓ¦ÓÃ³ÌĞò³õÊ¼»¯
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANOpen_App_Init
+åŠŸ    èƒ½ ï¼š CANOpenåº”ç”¨ç¨‹åºåˆå§‹åŒ–
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANOpen_App_Init(void)
 {
@@ -36,16 +36,16 @@ void CANOpen_App_Init(void)
   xReturn = xTaskCreate(CANOpen_App_Task, "CANOpen_App_Task", CANOPEN_STACK_SIZE, NULL, CANOPEN_TASK_PRIORITY, NULL);
   if(pdPASS != xReturn)
   {
-    return;                                      //´´½¨½ÓÊÕÈÎÎñÊ§°Ü
+    return;                                      //åˆ›å»ºæ¥æ”¶ä»»åŠ¡å¤±è´¥
   }
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANOpen_App_Task
-¹¦    ÄÜ £º CANOpenÓ¦ÓÃÈÎÎñ³ÌĞò
-²Î    Êı £º pvParameters --- ¿ÉÑ¡²ÎÊı
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANOpen_App_Task
+åŠŸ    èƒ½ ï¼š CANOpenåº”ç”¨ä»»åŠ¡ç¨‹åº
+å‚    æ•° ï¼š pvParameters --- å¯é€‰å‚æ•°
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 #include <data.h>
 #include "lifegrd.h"
@@ -54,18 +54,18 @@ void CANOpen_App_Init(void)
 #include "sysdep.h"
 static void CANOpen_App_Task(void *pvParameters)
 {
-  unsigned char nodeID = 0x00;                   //½ÚµãID
-  setNodeId(&TestMaster_Data, nodeID);
-  setState(&TestMaster_Data, Initialisation);
-	setState(&TestMaster_Data, Pre_operational);	/**ĞÄÌø,Í¬²½ÖÜÆÚĞ­ÒéÅäÖÃ */
-  setState(&TestMaster_Data, Operational);
+	unsigned char nodeID = 0x01;                   //èŠ‚ç‚¹ID
+	setNodeId(&TestMaster_Data, nodeID);
+	setState(&TestMaster_Data, Initialisation);
+	setState(&TestMaster_Data, Pre_operational);	/**å¿ƒè·³,åŒæ­¥å‘¨æœŸåè®®é…ç½® */
+	setState(&TestMaster_Data, Operational);
 
-  for(;;)
-  {
+	for(;;)
+	{
 		vTaskDelay(500); 
 
-    /* Ó¦ÓÃ´úÂë */
-  }
+	/* åº”ç”¨ä»£ç  */
+	}
 }
 
 

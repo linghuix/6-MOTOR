@@ -147,6 +147,7 @@ enum E_OBJ_MODE
 };
 
 
+
 // E_OBJ_DICTIONARY 类型的枚举，类似于define. 参考手册见 EPOS2 Firmware Specification.pdf P110
 enum E_OBJ_DICTIONARY
 {

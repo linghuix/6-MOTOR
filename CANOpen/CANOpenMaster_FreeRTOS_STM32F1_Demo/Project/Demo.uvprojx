@@ -335,7 +335,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F10X_HD,DEBUG_ERR_CONSOLE_ON,DEBUG_WAR_CONSOLE_ON</Define>
+              <Define>STM32F10X_HD,DEBUG_ERR_CONSOLE_ON</Define>
               <Undefine></Undefine>
               <IncludePath>..\App;..\Bsp;..\Libraries\CMSIS\CoreSupport;..\Libraries\CMSIS\DeviceSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM3;..\CANOpen\inc;..\CANOpen\inc\stm32;..\App\canopen;..\EPOS</IncludePath>
             </VariousControls>
@@ -665,6 +665,16 @@
               <FileName>sdo_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\EPOS\sdo_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>pdo_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EPOS\pdo_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>gait.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EPOS\gait.c</FilePath>
             </File>
           </Files>
         </Group>

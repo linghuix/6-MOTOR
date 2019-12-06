@@ -3,7 +3,6 @@
 #include "canfestival.h"
 #include "TestMaster.h"
 #include "sdo_control.h"
-
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
@@ -14,8 +13,8 @@ write parameter to Object Dictionary through CAN use SDO messages
 int NEST = 0;           //Ç¶Ì×²ãÊý
 
 /**
-	*
-	*/
+ *
+ */
 void _sdocallback(CO_Data* d, UNS8 nodeId){
 	MSG_WAR(0x0000, "sdocallback in nodeid: ", nodeId);
 	resetSDO(d);

@@ -442,12 +442,12 @@ UNS8 failedSDO (CO_Data* d, UNS8 CliServNbr, UNS8 whoami, UNS16 index,
 	return 0;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param line
- **/
+
+/** 
+ * @brief 重置未使用的transfers
+ * @param *d 
+ * @param line CS通讯管道序号
+ */
 void resetSDOline ( CO_Data* d, UNS8 line )
 {
 	UNS32 i;
@@ -459,18 +459,17 @@ void resetSDOline ( CO_Data* d, UNS8 line )
 	d->transfers[line].abortCode = 0;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param line
- ** @param CliServNbr
- ** @param index
- ** @param subIndex
- ** @param state
- **
- ** @return
- **/
+
+/** 
+ * @brief 初始化transfers结构体
+ * @param *d 
+ * @param line transfers数组的序号，CS通讯管道序号
+ * @param CliServNbr Client or Server序列 与can帧id相关
+ * @param index
+ * @param subIndex
+ * @param state 初始化的状态
+ * @return 0
+ */
 UNS8 initSDOline (CO_Data* d, UNS8 line, UNS8 CliServNbr, UNS16 index, UNS8 subIndex, UNS8 state)
 {
 	MSG_WAR(0x3A25, "init SDO line nb : ", line);
@@ -505,15 +504,14 @@ UNS8 initSDOline (CO_Data* d, UNS8 line, UNS8 CliServNbr, UNS16 index, UNS8 subI
 	return 0;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param whoami
- ** @param line
- **
- ** @return
- **/
+
+/** 
+ * @brief 获取未使用(状态为SDO_RESET)的transfers结构体，以存储新的SDO数据
+ * @param *d 
+ * @param whoami 我的身份 SDO_SERVER or SDO_CLIENT.
+ * @param *line CS通讯管道序号
+ * @return 0xFF 所有的结构体都在使用中  Else, return 0.
+ */
 UNS8 getSDOfreeLine ( CO_Data* d, UNS8 whoami, UNS8 *line )
 {
 
@@ -530,16 +528,14 @@ UNS8 getSDOfreeLine ( CO_Data* d, UNS8 whoami, UNS8 *line )
 	return 0xFF;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param CliServNbr
- ** @param whoami
- ** @param line
- **
- ** @return
- **/
+/** 
+ * @brief 获取正在进行SDO通讯(wait for response 除了SDO_ABORTED_INTERNAL)的transfers数组对应的序号
+ * @param *d 
+ * @param CliServNbr Client or Server CAN-ID序列
+ * @param whoami CS通讯管道中 me 扮演的角色
+ * @param *line CS通讯管道序号
+ * @return 0xFF if error.  Else, return 0
+ */
 UNS8 getSDOlineOnUse (CO_Data* d, UNS8 CliServNbr, UNS8 whoami, UNS8 *line)
 {
 
@@ -557,16 +553,15 @@ UNS8 getSDOlineOnUse (CO_Data* d, UNS8 CliServNbr, UNS8 whoami, UNS8 *line)
 	return 0xFF;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param CliServNbr
- ** @param whoami
- ** @param line
- **
- ** @return
- **/
+
+/** 
+ * @brief 获取正在进行SDO通讯(wait for response)的transfers数组对应的序号，关闭它
+ * @param *d 
+ * @param CliServNbr Client or Server CAN-ID序列
+ * @param whoami CS通讯管道中 me 扮演的角色 与can帧id相关
+ * @param *line CS通讯管道序号
+ * @return 0xFF if error.  Else, return 0
+ */
 UNS8 getSDOlineToClose (CO_Data* d, UNS8 CliServNbr, UNS8 whoami, UNS8 *line)
 {
 
@@ -584,15 +579,13 @@ UNS8 getSDOlineToClose (CO_Data* d, UNS8 CliServNbr, UNS8 whoami, UNS8 *line)
 }
 
 
-/*!
- **
- **
- ** @param d
- ** @param nodeId
- ** @param whoami
- **
- ** @return
- **/
+
+/** 
+ * @brief 中断与服务器id的sdo传输，I am client
+ * @param *d 
+ * @param nodeId 服务器的id
+ * @param whoami CS通讯管道中 me 扮演的角色
+ */
 UNS8 closeSDOtransfer (CO_Data* d, UNS8 nodeId, UNS8 whoami)
 {
 	UNS8 err;
@@ -612,11 +605,11 @@ UNS8 closeSDOtransfer (CO_Data* d, UNS8 nodeId, UNS8 whoami)
 }
 
 /*!
- **
+ ** 获取还需要发送或者接收的字节数
  **
  ** @param d
  ** @param line
- ** @param nbBytes
+ ** @param nbBytes 
  **
  ** @return
  **/
@@ -630,12 +623,13 @@ UNS8 getSDOlineRestBytes (CO_Data* d, UNS8 line, UNS32 * nbBytes)
 	return 0;
 }
 
+
 /*!
  **
- **
+ ** 设置待发送/接收 字节数
  ** @param d
  ** @param line
- ** @param nbBytes
+ ** @param nbBytes 待发送/接收 字节数
  **
  ** @return
  **/
@@ -654,13 +648,12 @@ UNS8 setSDOlineRestBytes (CO_Data* d, UNS8 line, UNS32 nbBytes)
 
 /*!
  **
- **
+ ** 发送SDO帧
  ** @param d
- ** @param whoami
- ** @param CliServNbr
- ** @param pData
- **
- ** @return
+ ** @param whoami CS通讯管道中 me 扮演的角色 用于选择SDO帧的can-id
+ ** @param CliServNbr Client or Server CAN-ID序列
+ ** @param pData 发送数据内容指针
+ ** @return canSend(bus_id,&m) or 0xFF if error.
  **/
 UNS8 sendSDO (CO_Data* d, UNS8 whoami, UNS8 CliServNbr, UNS8 *pData)
 {
@@ -704,18 +697,21 @@ UNS8 sendSDO (CO_Data* d, UNS8 whoami, UNS8 CliServNbr, UNS8 *pData)
 	return canSend(d->canHandle,&m);
 }
 
-/*!
- **
- **
- ** @param d
- ** @param whoami
- ** @param CliServNbr
- ** @param index
- ** @param subIndex
- ** @param abortCode
- **
- ** @return
- **/
+
+/** 
+ * @brief 发送错误SDO给客户端 The reasons may be :
+ * Read/Write to a undefined object
+ * Read/Write to a undefined subindex
+ * Read/write a not valid length object
+ * Write a read only object
+ * @param *d
+ * @param whoami SDO_CLIENT or SDO_SERVER
+ * @param CliServNbr Client or Server CAN-ID序列
+ * @param index
+ * @param subIndex
+ * @param abortCode 错误代码
+ * @return 0
+ */
 UNS8 sendSDOabort (CO_Data* d, UNS8 whoami, UNS8 CliServNbr, UNS16 index, UNS8 subIndex, UNS32 abortCode)
 {
 	UNS8 data[8];
@@ -738,14 +734,18 @@ UNS8 sendSDOabort (CO_Data* d, UNS8 whoami, UNS8 CliServNbr, UNS16 index, UNS8 s
 	return ret;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param m
- **
- ** @return
- **/
+
+/** 
+ * @brief Treat a SDO frame reception SDO接收后的处理函数
+ * call the function sendSDO
+ * called by canDispatch()
+ * @param *d
+ * @param *m can消息指针结构
+ * @return code : 
+ * 		   - 0xFF if error
+ *         - 0x80 if transfer aborted by the server
+ *         - 0x0  ok
+ */
 UNS8 proceedSDO (CO_Data* d, Message *m)
 {
 	UNS8 err;
@@ -1049,7 +1049,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 				}
 				/* Reset the wathdog */
 				RestartSDO_TIMER(line)
-					index = d->transfers[line].index;
+				index = d->transfers[line].index;
 				subIndex = d->transfers[line].subIndex;
 				/* test of the toggle; */
 				if (d->transfers[line].toggle != getSDOt(m->data[0])) {
@@ -1063,7 +1063,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 				if (nbBytes == 0) {
 					MSG_WAR(0x3A87, "SDO End download. segment response received. OK. from nodeId", nodeId);
 					StopSDO_TIMER(line)
-						d->transfers[line].state = SDO_FINISHED;
+					d->transfers[line].state = SDO_FINISHED;
 					if(d->transfers[line].Callback) (*d->transfers[line].Callback)(d,nodeId);
 					return 0x00;
 				}
@@ -1181,7 +1181,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 				}
 				/* Reset the wathdog */
 				RestartSDO_TIMER(line)
-					index = d->transfers[line].index;
+				index = d->transfers[line].index;
 				subIndex = d->transfers[line].subIndex;
 
 				if (getSDOe(m->data[0])) { /* If SDO expedited */
@@ -1196,7 +1196,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 					/* SDO expedited -> transfer finished. data are available via  getReadResultNetworkDict(). */
 					MSG_WAR(0x3A98, "SDO expedited upload finished. Response received from node : ", nodeId);
 					StopSDO_TIMER(line)
-						d->transfers[line].count = nbBytes;
+					d->transfers[line].count = nbBytes;
 					d->transfers[line].state = SDO_FINISHED;
 					if(d->transfers[line].Callback) (*d->transfers[line].Callback)(d,nodeId);
 					return 0;
@@ -1827,7 +1827,7 @@ UNS8 proceedSDO (CO_Data* d, Message *m)
 
 
 /*!
- **
+ ** 获取发送给nodeId服务器的CAN-ID所在字典的序号 SDO_CLT
  **
  ** @param d
  ** @param nodeId
@@ -1879,7 +1879,7 @@ UNS8 GetSDOClientFromNodeId( CO_Data* d, UNS8 nodeId )
 }
 
 /*!
- **
+ ** 重置客户端SDO发送结构体
  ** @param d
  ** @param nodeId
  **/
@@ -1898,6 +1898,8 @@ void resetClientSDOLineFromNodeId(CO_Data* d, UNS8 nodeId)
 	resetSDOline(d, line);
 }
 
+
+
 /*!
  **
  **
@@ -1908,7 +1910,7 @@ void resetClientSDOLineFromNodeId(CO_Data* d, UNS8 nodeId)
  ** @param count
  ** @param dataType
  ** @param data
- ** @param Callback
+ ** @param Callback 回调函数 void (*SDOCallback_t)(CO_Data* d, UNS8 nodeId)
  ** @param endianize
  **
  ** @return
@@ -2041,25 +2043,31 @@ INLINE UNS8 _writeNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index,
 	return 0;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param nodeId
- ** @param index
- ** @param subIndex
- ** @param count
- ** @param dataType
- ** @param data
- ** @param useBlockMode
- **
- ** @return
- **/
+
+		
+
+
+/** 
+ * @ingroup sdo
+ * @brief 以客户端的身份，发送SDO request frame配置nodeid的字典
+ * @param *d 字典结构体指针
+ * @param nodeId download的服务器对象nodeId
+ * @param index At index indicated
+ * @param subIndex At subIndex indicated
+ * @param count 需要写入的字节数
+ * @param dataType (defined in objdictdef.h) 数据类型
+ * @param *data 指向要发送的数据指针
+ * @return 
+ * - 0 is returned upon success.
+ * - 0xFE is returned when no sdo client to communicate with node.
+ * - 0xFF is returned when error occurs.
+ */
 UNS8 writeNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index,
 		UNS8 subIndex, UNS32 count, UNS8 dataType, void *data, UNS8 useBlockMode)
 {
 	return _writeNetworkDict (d, nodeId, index, subIndex, count, dataType, data, NULL, 1, useBlockMode);
 }
+		
 
 /*!
  **
@@ -2212,18 +2220,20 @@ INLINE UNS8 _readNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index, UNS8 subInde
 	return 0;
 }
 
-/*!
- **
- **
- ** @param d
- ** @param nodeId
- ** @param index
- ** @param subIndex
- ** @param dataType
- ** @param useBlockMode
- **
- ** @return
- **/
+
+/**
+ * @ingroup sdo 
+ * @brief 以客户端的身份发送SDO request frame读取nodeid中的字典值
+ * @param *d 字典
+ * @param nodeId 
+ * @param index 
+ * @param subIndex 
+ * @param dataType (defined in objdictdef.h) 
+ * @return 
+ * - 0 is returned upon success.
+ * - 0xFE is returned when no sdo client to communicate with node.
+ * - 0xFF is returned when error occurs.
+ */
 UNS8 readNetworkDict (CO_Data* d, UNS8 nodeId, UNS16 index, UNS8 subIndex, UNS8 dataType, UNS8 useBlockMode)
 {
 	return _readNetworkDict (d, nodeId, index, subIndex, dataType, NULL, useBlockMode);

@@ -209,12 +209,12 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	/* Object dictionary*/\
 	& NODE_PREFIX ## _bDeviceNodeId,     /* bDeviceNodeId */\	//设备的ID  1, 127
 	NODE_PREFIX ## _objdict,             /* objdict  */\		//字典对象指针，见词条Objdict
-	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//发送PDO通信参数的数组
+	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//TPDO通信参数
 	NULL,                                /* RxPDO_EventTimers */\
 	_RxPDO_EventTimers_Handler,          /* RxPDO_EventTimers_Handler */\
-	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\//?存储SDO、PDO Objdict的开始位置(包含)
-	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ //?存储SDO、PDO Objdict的结束位置(包含)
-	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\	//index字条数量
+	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\		//存储SDO、PDO Objdict参数配置的开始位置(包含)
+	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ 		//存储SDO、PDO Objdict参数配置的结束位置(包含)
+	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\	// Objdict index字条数量
 	& NODE_PREFIX ## _iam_a_slave,       /* iam_a_slave */\	//主从配置， 0表示主机，1表示从机
 	NODE_PREFIX ## _valueRangeTest,      /* valueRangeTest */\//???????函数指针，检测值是否的超出范围
 	\
@@ -226,7 +226,7 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	\
 	/* State machine*/\
 	Unknown_state,      /* nodeState */\		//can节点状态，初始化为未知
-	/* structure s_state_communication */\		//CANopen不同的初始化操作阶段，初始化如下
+	/* structure s_state_communication */\		//CANopen协议启动标志，初始0
 	{\
 		0,          /* csBoot_Up */\
 		0,          /* csSDO */\
@@ -258,7 +258,7 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	/* NMT-nodeguarding */\
 	TIMER_NONE,                                /* GuardTimeTimer */\
 	TIMER_NONE,                                /* LifeTimeTimer */\
-	_nodeguardError,           /* nodeguardError */\
+	_nodeguardError,           				   /* nodeguardError */\
 	& NODE_PREFIX ## _obj100C,                 /* GuardTime */\
 	& NODE_PREFIX ## _obj100D,                 /* LifeTimeFactor */\
 	{REPEAT_NMT_MAX_NODE_ID_TIMES(nodeGuardStatus_Initializer)},\
@@ -495,15 +495,19 @@ wxPython				 // python2.7 -mpip install wxPython
 
 ## HeartBeat
 
+> state.c中初始化   `ifeGuardInit(d)`
+
 启动条件  CAN-ID = 0x700+
 
 `if ( *d->ProducerHeartBeatTime )`  周期单位ms
 
 
 
+
+
 ## SYNC
 
-> void startSYNC(CO_Data* d)   CAN-ID=0x80
+> state.c中初始化 void startSYNC(CO_Data* d)   CAN-ID=0x80
 
 启动条件 
 
@@ -624,6 +628,8 @@ CS确定方法
 
 ## PDO
 
+> state.c中初始化 PDOInit
+
 > PDO_status
 
 ```c
@@ -636,6 +642,25 @@ Message last_message;				//
 
 
 ```c
+//Index 1400h-15FFh，Receive PDO Communication Parameter，必须如果支持对应的PDO
+Sub-index 0，Number，unsigned8（2-5），RO，必须
+Sub-index 1，COB-ID used by PDO，unsigned32，RO/RW（如果支持可变的COB-ID），必须
+    Bit31：1存在PDO，0不存在PDO
+    Bit30：1 no RTR allowed on this PDO，0 RTR allowed on this PDO
+    Bit29：1 29位ID，0 11位ID
+    Bit29-0：29位ID或11位ID（低11位）
+Sub-index 2，transmission type，unsigned8，RO/RW（如果支持可变的传输类型），必须
+Sub-index 3，inhibit time（not used for RPDO，100us），unsigned16，RW，可选
+Sub-index 4，compatibility entry（保留），unsigned8，RW，可选
+Sub-index 5，event time（not used for RPDO，ms），unsigned16，RW，可选
+
+//Index 1600h-17FFh，Receive PDO Mapping Parameter，必须如果支持对应的PDO
+Sub-index 0，Number，unsigned8（0-64），RO/RW如果支持动态映射，必须
+Sub-index 1-40h，PDO Mapping，unsigned32，RW，根据被映射的数量和数据大小来定必须或可选
+    Bit31-16：index
+    Bit15-8：Sub-index
+    Bit7-0：object length
+
 //Index 1800h-19FFh，Transmit PDO Communication Parameter，必须如果支持对应的PDO
 Sub-index 0，Number，unsigned8（2-5），RO，必须
 Sub-index 1，COB-ID used by PDO，unsigned32，RO/RW（如果支持COB-ID配置），必须
@@ -658,9 +683,8 @@ Sub-index 1-40h，PDO Mapping，unsigned32，RW，根据被映射的数量和数
 ```
 
 * buildPDO是重点，用于对某个TXPDO，尽力发送的PDO帧
-
 * PDOInit(objdict)
-
+* TPDO_Communication_Parameter_Callback
   * 调用 _sendPDOevent()    **精妙的代码**
     * 触发非同步pdo
       * 进入状态11
@@ -684,6 +708,8 @@ enum enum_nodeState {
 ```
 
 ## Error
+
+> state.c中初始化  `emergencyInit(d)`
 
 ```c
 typedef struct {

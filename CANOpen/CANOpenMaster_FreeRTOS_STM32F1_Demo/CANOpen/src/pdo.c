@@ -36,16 +36,14 @@
 **
 */
 
-/*!
-**
-**
-** @param d
-** @param numPdo The PDO index
-** @param pdo pointer to can message to be filled
-**
-** @return
-**/
 
+/** 
+ * @brief 根据指定的PDO_TRS，获取其需要发送的can message信息
+ * @param *d
+ * @param numPdo The PDO number
+ * @param *pdo CAN message structure CAN消息指针
+ * @return 0 or 0xFF if error.
+ */
 UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
 {
   const indextable *TPDO_com = d->objdict + d->firstIndex->PDO_TRS + numPdo;
@@ -58,8 +56,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
   pdo->cob_id = (UNS16) UNS16_LE(*(UNS32*)TPDO_com->pSubindex[1].pObject & 0x7FF);
   pdo->rtr = NOT_A_REQUEST;
 
-  MSG_WAR (0x3009, "  PDO CobId is : ",
-           *(UNS32 *) TPDO_com->pSubindex[1].pObject);
+  MSG_WAR (0x3009, "  PDO CobId is : ",*(UNS32 *) TPDO_com->pSubindex[1].pObject);
   MSG_WAR (0x300D, "  Number of objects mapped : ", *pMappingCount);
 
   do
@@ -68,8 +65,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
       UNS8 tmp[] = { 0, 0, 0, 0, 0, 0, 0, 0 };  /* temporary space to hold bits */
 
       /* pointer fo the var which holds the mapping parameter of an mapping entry  */
-      UNS32 *pMappingParameter =
-        (UNS32 *) TPDO_map->pSubindex[prp_j + 1].pObject;
+      UNS32 *pMappingParameter = (UNS32 *) TPDO_map->pSubindex[prp_j + 1].pObject;
       UNS16 index = (UNS16) ((*pMappingParameter) >> 16);
       UNS32 Size = (UNS32) (*pMappingParameter & (UNS32) 0x000000FF);     /* Size in bits */
 
@@ -78,7 +74,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
         {
           UNS32 ByteSize = 1 + ((Size - 1) >> 3);        /*1->8 => 1 ; 9->16 => 2, ... */
           UNS8 subIndex =
-            (UNS8) (((*pMappingParameter) >> (UNS8) 8) & (UNS32) 0x000000FF);
+          	(UNS8) (((*pMappingParameter) >> (UNS8) 8) & (UNS32) 0x000000FF);
 
           MSG_WAR (0x300F, "  got mapping parameter : ", *pMappingParameter);
           MSG_WAR (0x3050, "    at index : ", TPDO_map->index);
@@ -99,8 +95,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
           offset += Size;
         }
       prp_j++;
-    }
-  while (prp_j < *pMappingCount);
+    } while (prp_j < *pMappingCount);
 
   pdo->len = (UNS8)(1 + ((offset - 1) >> 3));
 
@@ -111,7 +106,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
 
 /*!
 **
-**
+** 发送rpdoindex所对应的rpdo request frame帧，
 ** @param d
 ** @param RPDOIndex
 **
@@ -416,12 +411,12 @@ proceedPDO (CO_Data * d, Message * m)
 /*!
 **
 **
-** @param NbBits
-** @param SrcByteIndex
-** @param SrcBitIndex
-** @param SrcBigEndian
-** @param DestByteIndex
-** @param DestBitIndex
+** @param NbBits 来自PDOmapping需要拷贝的位数，二进制存储。
+** @param SrcByteIndex 源需拷贝字节
+** @param SrcBitIndex  源需拷贝非对齐位数，0
+** @param SrcBigEndian 
+** @param DestByteIndex 拷贝目的，字节
+** @param DestBitIndex 拷贝目的，位数，非8位对齐位数 offset%8
 ** @param DestBigEndian
 **/
 void
@@ -480,6 +475,14 @@ CopyBits (UNS8 NbBits, UNS8 * SrcByteIndex, UNS8 SrcBitIndex,
 
 }
 
+
+/*!
+** 调用底层发送PDO帧
+**
+** @param d 
+** @param pdoNum PDO_status对应序号或者通讯管道
+** @param pdo 发送内容
+**/
 static void sendPdo(CO_Data * d, UNS32 pdoNum, Message * pdo)
 {
   /*store_as_last_message */
@@ -491,20 +494,28 @@ static void sendPdo(CO_Data * d, UNS32 pdoNum, Message * pdo)
 }
 
 
+
 /*!
-**
-**
+** 发送PDO 非同步帧/事件触发帧
 ** @param d
 **
 ** @return
 **/
-
 UNS8
 sendPDOevent (CO_Data * d)
 {
   /* Calls _sendPDOevent specifying it is not a sync event */
   return _sendPDOevent (d, 0);
 }
+
+
+/** 
+ * @brief 比较new和last的message是否一致，不同时，触发event， 
+ * 当未被打上PDO——INHIBITED标签时，发送PDO帧，重启事件、inhibit定时器，打上PDO——INHIBITED标签
+ * look TPDO transmit 
+ * type and content change before sending it.    
+ * @param *d Pointer on a CAN object data structure
+ */
 
 UNS8
 sendOnePDOevent (CO_Data * d, UNS8 pdoNum)
@@ -586,6 +597,17 @@ sendOnePDOevent (CO_Data * d, UNS8 pdoNum)
     return 1;
 }
 
+
+/** 
+ * @ingroup pdo
+ * @brief 事件定时器触发条件到达时。
+ * 强制修改last message ，使之与new不同，调用sendOnePDOevent，发送pdo
+ * 在TPDO_Communication_Parameter_Callback，proceedPDO中调用
+ * sendonepdo 中用于 SetAlarm 的回调函数
+ * @param *d Pointer on a CAN object data structure
+ * @param pdoNum The PDO number
+ */
+
 void
 PDOEventTimerAlarm (CO_Data * d, UNS32 pdoNum)
 {
@@ -596,6 +618,13 @@ PDOEventTimerAlarm (CO_Data * d, UNS32 pdoNum)
   sendOnePDOevent (d, (UNS8) pdoNum);
 }
 
+
+/** 
+ * @ingroup pdo
+ * @brief 间歇时间定时器，触发时，消除这个pdo发送通道的PDO_INHIBITED状态
+ * @param *d Pointer on a CAN object data structure
+ * @param pdoNum The PDO number
+ */
 void
 PDOInhibitTimerAlarm (CO_Data * d, UNS32 pdoNum)
 {
@@ -606,6 +635,7 @@ PDOInhibitTimerAlarm (CO_Data * d, UNS32 pdoNum)
   sendOnePDOevent (d, (UNS8) pdoNum);
 }
 
+
 void
 _RxPDO_EventTimers_Handler(CO_Data *d, UNS32 pdoNum)
 {
@@ -614,8 +644,9 @@ _RxPDO_EventTimers_Handler(CO_Data *d, UNS32 pdoNum)
 }
 
 /*!
-**
-**
+** 发送PDO 同步帧和非同步帧
+** 同步帧buildPDO所有的TPDO帧，进行发送 涉及state3,5,11
+** 非同步帧 state3，11
 ** @param d
 ** @param isSyncEvent
 **
@@ -750,9 +781,10 @@ _sendPDOevent (CO_Data * d, UNS8 isSyncEvent)
 }
 
 /*!
+** 事件，间歇时间，发送类型改变时，触发。
+** 初始化PDO_status,并触发事件 调用PDOEventTimerAlarm
 **
-**
-** @param d
+** @param d 
 ** @param OD_entry
 ** @param bSubindex
 ** @return always 0
@@ -791,6 +823,17 @@ TPDO_Communication_Parameter_Callback (CO_Data * d,
   return 0;
 }
 
+
+
+/** 
+* @brief PDO 配置的初始化
+* 为字典配置的TPDO对应的subindex中添加 callback  TPDO_Communication_Parameter_Callback
+* 调用_sendPDOevent (d, 0); sendOnePDOevent 其中将 初始化 启动事件、inhibit定时器
+* 
+** 同步的配置，启动流程   sync发送后，proceedSYNC 调用_sendPDOevent（d，1）
+** 非同步配置，PDOinit后_sendPDOevent（d，0）配置
+* @param *d 
+*/
 void
 PDOInit (CO_Data * d)
 {
@@ -823,6 +866,11 @@ PDOInit (CO_Data * d)
   _sendPDOevent (d, 0);
 }
 
+
+/** 
+ * @brief 所有的配置的TPDO对应的PDO_status初始化为0或者TIMER_NONE
+ * @param *d 
+ */
 void
 PDOStop (CO_Data * d)
 {
@@ -846,6 +894,12 @@ PDOStop (CO_Data * d)
       }
 }
 
+
+/** 
+ * @brief Enable a PDO by setting to 0 the bit 32 of the COB-ID parameter
+ * @param *d Pointer on a CAN object data structure
+ * @param pdoNum The PDO number
+ */
 void
 PDOEnable (CO_Data * d, UNS8 pdoNum)
 {
@@ -855,6 +909,13 @@ PDOEnable (CO_Data * d, UNS8 pdoNum)
   offsetObjdict = (UNS16) (d->firstIndex->PDO_TRS + pdoNum);
   *(UNS32 *) d->objdict[offsetObjdict].pSubindex[1].pObject &= ~0x80000000;
 }
+
+
+/** 
+ * @brief Disable a PDO by setting to 1 the bit 32 of the COB-ID parameter
+ * @param *d Pointer on a CAN object data structure
+ * @param pdoNum The PDO number
+ */
 
 void
 PDODisable (CO_Data * d, UNS8 pdoNum)

@@ -160,6 +160,7 @@ UNS8 setState(CO_Data* d, e_nodeState newState)
 {
 	if(newState != d->nodeState){
 		switch( newState ){
+			/* start Lss */
 			case Initialisation:
 			{
 				s_state_communication newCommunicationState = {1, 0, 0, 0, 0, 0, 0};
@@ -339,12 +340,7 @@ void _preOperational(CO_Data* d){
         masterSendNMTstateChange (d, 0, NMT_Reset_Node);
 			
 					//mycode
-			Epos_INIT();
-			//Epos_Init(&Controller1, NOT_USED, 2);
-			//SDO_Write(&Controller1, OD_CTRL_WORD, 0x00, Fault_Reset);
-			//MSG_WAR(0x1000,"getWrite",data);
-			//SDO_Write(&Controller1,OP_MODE,0x00,Profile_Position_Mode); 
-			//SDO_Write(&Controller1,0x607F,0x00,256);
+			//Epos_INIT();
 			//data = SDO_Read(&Controller1,OD_CTRL_WORD,0x00);
 			MSG_WAR(0x1000,"getWrite",data);
 				//mycode
