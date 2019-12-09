@@ -503,8 +503,6 @@ wxPython				 // python2.7 -mpip install wxPython
 
 
 
-
-
 ## SYNC
 
 > state.c中初始化 void startSYNC(CO_Data* d)   CAN-ID=0x80
@@ -628,7 +626,19 @@ CS确定方法
 
 ## PDO
 
-> state.c中初始化 PDOInit
+> state.c中进行初始化 PDOInit
+>
+> 
+>
+> void setNodeId(CO_Data* d, UNS8 nodeId)
+>
+> ​	初始设置TPDO CAN-ID 0x1800,0x1801,0x1802,0x1803. 为0x180,0x280,0x380,0x480+NodeId.
+>
+> ​	初始设置RPDO CAN-ID 0x1400,0x1401,0x1402,0x1403. 为0x200,0x300,0x400,0x500+NodeId.
+>
+> ​	初始设置EMCY CAN-ID nodeId + 0x80
+
+​		
 
 > PDO_status
 
@@ -691,6 +701,8 @@ Sub-index 1-40h，PDO Mapping，unsigned32，RW，根据被映射的数量和数
     * 触发同步pdo
       * 进入状态3和5和11，多次调用buildPDO ,实现所有的PDO的发送
 
+
+
 ## NMT
 
 ```
@@ -707,7 +719,9 @@ enum enum_nodeState {
 };
 ```
 
-## Error
+
+
+## Emergency
 
 > state.c中初始化  `emergencyInit(d)`
 
@@ -720,4 +734,8 @@ typedef struct {
 ```
 
 
+
+> _Emergency COB ID  要求在TestMaster中设置为 0x80+TestMaster_bDeviceNodeId;_ 
+>
+> _否则，无法在void setNodeId(CO_Data* d, UNS8 nodeId)中初始化_ 
 

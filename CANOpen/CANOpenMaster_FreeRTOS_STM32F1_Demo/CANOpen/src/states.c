@@ -340,14 +340,12 @@ void _preOperational(CO_Data* d){
         masterSendNMTstateChange (d, 0, NMT_Reset_Node);
 			
 					//mycode
-			//Epos_INIT();
-			//data = SDO_Read(&Controller1,OD_CTRL_WORD,0x00);
-			MSG_WAR(0x1000,"getWrite",data);
+				Epos_INIT();
+				//data = SDO_Read(&Controller1,OD_CTRL_WORD,0x00);
+				MSG_WAR(0x1000,"getWrite",data);
 				//mycode
     }
-
-
-
 }
+
 void _operational(CO_Data* d){(void)d;}
 void _stopped(CO_Data* d){(void)d;}
