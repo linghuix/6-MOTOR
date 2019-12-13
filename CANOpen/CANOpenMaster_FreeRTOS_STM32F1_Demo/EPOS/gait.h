@@ -1,5 +1,5 @@
-#ifndef __gait_H
-#define __gait_H
+#ifndef __gait_H__
+#define __gait_H__
 #include "stdint.h"
 
 extern double ang[51];

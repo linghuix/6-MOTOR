@@ -21,23 +21,23 @@ void CAN_SetMsg(uint32_t ID, uint32_t low, uint32_t high){}
 */
 void Epos_ParamInit(Epos* epos)
 {
-    //SDO_Read(epos,OD_STATUS_WORD,0x00);                                 //Fault Status=0x0108  红灯闪烁
+    //SDO_Read(epos,OD_STATUS_WORD,0x00);                         //Fault Status=0x0108  红灯闪烁
 
     SDO_Write(epos, OD_CTRL_WORD, 0x00, Fault_Reset);      //Fault_Reset command 控制字设置为0x80 第7位置1，参考固件手册 Fault reset figure3-3 事件15 驱动初始化完成
 
-     //SDO_Read(epos,OD_STATUS_WORD,0x00);                               //Switch On    Status=0x0540/0140   绿灯闪烁
+     //SDO_Read(epos,OD_STATUS_WORD,0x00);                        //Switch On    Status=0x0540/0140   绿灯闪烁
 
-    SDO_Write(epos, OD_Following_ERR_window, 0x00, MAX_F_ERR);     //最大误差设置
+    SDO_Write(epos, OD_Following_ERR_window, 0x00, MAX_F_ERR);   	//最大误差设置
 
-    SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, 1000);//MAX_P_V);   //最大速度
+    SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, 1000);//MAX_P_V);   	//最大速度
 
-    SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度  无效参数
+    SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); 					//加速度  无效参数
 
-    SDO_Write(epos, OD_P_DECELERATION, 0x00, epos->dec); //负加速度
+    SDO_Write(epos, OD_P_DECELERATION, 0x00, epos->dec); 					//负加速度
 
-    SDO_Write(epos, OD_QS_DECELERATION, 0x00, QDEC);     //快速停止负加速度
+    SDO_Write(epos, OD_QS_DECELERATION, 0x00, QDEC);     					//快速停止负加速度
 
-    //SDO_Write(epos,OD_CAN_BITRATE,0x00,0x00);              //set value = 0. set CAN bitrate 1M/s. 
+    //SDO_Write(epos,OD_CAN_BITRATE,0x00,0x00);              			//set value = 0. set CAN bitrate 1M/s. 
 
 		MSG_WAR(0x0000, "Epos_ParamInit:", epos->node_ID);
 }
@@ -238,15 +238,16 @@ void Epos_setMode(Epos* epos, Uint16 mode){
 
     
 void Epos_OperEn(Epos* epos){
+	
     SDO_Write(epos,OD_CTRL_WORD,0x00,0x06);                    // Shut down  驱动函数失能
     Epos_Delay(500);
 
-        //SDO_Read(epos,OD_STATUS_WORD,0x00);                                                // Ready to Switch On    Status=0x0121   绿灯闪烁
+    //SDO_Read(epos,OD_STATUS_WORD,0x00);                      // Ready to Switch On    Status=0x0121   绿灯闪烁
     
     SDO_Write(epos,OD_CTRL_WORD,0x00,0x0F);                    // Switch on AND Enable Operation 驱动参数设定
     Epos_Delay(500);
     
-        //SDO_Read(epos,OD_STATUS_WORD,0x00);                                                // Operation Enable      Status=0x0137   绿灯常亮
+    //SDO_Read(epos,OD_STATUS_WORD,0x00);                      // Operation Enable      Status=0x0137   绿灯常亮
 }
 
 

@@ -78,7 +78,7 @@ void proceedNMTstateChange(CO_Data* d, Message *m)
         setState(d,Initialisation);
         break;
 
-      case NMT_Reset_Comunication:
+      case NMT_Reset_Comunication:	/* 调用回调函数，重新设置id，并Initialisation */
          {
          UNS8 currentNodeId = getNodeId(d);
          

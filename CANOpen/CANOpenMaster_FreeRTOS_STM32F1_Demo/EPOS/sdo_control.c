@@ -1,9 +1,11 @@
 #include "HW_epos.h"
 #include "epos.h"
+
 #include "canfestival.h"
 #include "TestMaster.h"
 #include "sdo_control.h"
-#include "FreeRTOS.h"
+
+#include "FreeRTOS.h"//vTaskDelay
 #include "semphr.h"
 #include "task.h"
 /***** 
@@ -19,6 +21,7 @@ void _sdocallback(CO_Data* d, UNS8 nodeId){
 	MSG_WAR(0x0000, "sdocallback in nodeid: ", nodeId);
 	resetSDO(d);
 }
+
 
 uint8_t SDO_Write(Epos* epos,Uint32 Index_Type,Uint8 SubIndex,Uint32 param)
 {

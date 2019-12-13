@@ -209,11 +209,11 @@ CANRcv_Task			//接收数据，调用重要函数 canDispatch
 	/* Object dictionary*/\
 	& NODE_PREFIX ## _bDeviceNodeId,     /* bDeviceNodeId */\	//设备的ID  1, 127
 	NODE_PREFIX ## _objdict,             /* objdict  */\		//字典对象指针，见词条Objdict
-	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//TPDO通信参数
+	NODE_PREFIX ## _PDO_status,          /* PDO_status */\		//TPDO通信管道状态,数量需配置
 	NULL,                                /* RxPDO_EventTimers */\
 	_RxPDO_EventTimers_Handler,          /* RxPDO_EventTimers_Handler */\
-	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\		//存储SDO、PDO Objdict参数配置的开始位置(包含)
-	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ 		//存储SDO、PDO Objdict参数配置的结束位置(包含)
+	& NODE_PREFIX ## _firstIndex,        /* firstIndex */\		//存储SDO、PDO Objdict参数配置的开始位置序号(包含)
+	& NODE_PREFIX ## _lastIndex,         /* lastIndex */\ 		//存储SDO、PDO Objdict参数配置的结束位置序号(包含)
 	& NODE_PREFIX ## _ObjdictSize,       /* ObjdictSize */\	// Objdict index字条数量
 	& NODE_PREFIX ## _iam_a_slave,       /* iam_a_slave */\	//主从配置， 0表示主机，1表示从机
 	NODE_PREFIX ## _valueRangeTest,      /* valueRangeTest */\//???????函数指针，检测值是否的超出范围
@@ -485,7 +485,7 @@ wxPython				 // python2.7 -mpip install wxPython
 
 #### Slave or Master
 
-#### ObjdictSize
+**TestMaster_PDO_status** 初始化个数
 
 
 
@@ -651,6 +651,16 @@ Message last_message;				//
 
 
 
+当你需要发送多个TPDO时，你需要，初始化它们。
+
+```c
+///如下是建立四个TPDO的情况
+s_PDO_status TestMaster_PDO_status[4] = 
+{s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer};
+```
+
+
+
 ```c
 //Index 1400h-15FFh，Receive PDO Communication Parameter，必须如果支持对应的PDO
 Sub-index 0，Number，unsigned8（2-5），RO，必须
@@ -739,3 +749,14 @@ typedef struct {
 >
 > _否则，无法在void setNodeId(CO_Data* d, UNS8 nodeId)中初始化_ 
 
+
+
+# stm32硬件出错
+
+主要是数组越界，指针问题，堆栈空间不足 所导致的。
+
+排除问题的方式是
+
+* 在进入硬件出错处，打上断点
+* 运行到断点处，观测堆栈的情况，确定出错点上一次所在函数
+* 

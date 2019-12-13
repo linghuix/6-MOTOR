@@ -676,6 +676,11 @@
               <FileType>1</FileType>
               <FilePath>..\EPOS\gait.c</FilePath>
             </File>
+            <File>
+              <FileName>nmt_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EPOS\nmt_control.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

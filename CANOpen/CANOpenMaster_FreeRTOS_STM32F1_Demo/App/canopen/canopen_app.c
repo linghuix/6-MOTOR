@@ -52,9 +52,10 @@ void CANOpen_App_Init(void)
 #include "canfestival.h"
 #include "dcf.h"
 #include "sysdep.h"
+
 static void CANOpen_App_Task(void *pvParameters)
 {
-	unsigned char nodeID = 0x05;                   //节点ID
+	unsigned char nodeID = 0x01;                   //节点ID
 	setNodeId(&TestMaster_Data, nodeID);
 	setState(&TestMaster_Data, Initialisation);
 	setState(&TestMaster_Data, Pre_operational);	/**心跳,同步周期协议配置 */

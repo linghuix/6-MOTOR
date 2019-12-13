@@ -5,7 +5,8 @@
 
 #include "epos.h"
 
-extern Epos Controller,Controller1; 
+//extern Epos ,Controller1; 
+extern Epos *Controller[];
 
 void Epos_INIT(void);
 void Epos_ReceiveDate(void);
