@@ -112,8 +112,7 @@ UNS8 buildPDO (CO_Data * d, UNS8 numPdo, Message * pdo)
 **
 ** @return
 **/
-UNS8
-sendPDOrequest (CO_Data * d, UNS16 RPDOIndex)
+UNS8 sendPDOrequest (CO_Data * d, UNS16 RPDOIndex)
 {
   UNS32 *pwCobId;
   UNS16 offset = d->firstIndex->PDO_RCV;
@@ -154,15 +153,14 @@ sendPDOrequest (CO_Data * d, UNS16 RPDOIndex)
 
 
 /*!
-**
+** Compute a PDO frame reception。 bus_id is hardware dependant
 **
 ** @param d
 ** @param m
 **
 ** @return
 **/
-UNS8
-proceedPDO (CO_Data * d, Message * m)
+UNS8 proceedPDO (CO_Data * d, Message * m)
 {
   UNS8 numPdo;
   UNS8 numMap;                  /* Number of the mapped varable */
@@ -419,8 +417,7 @@ proceedPDO (CO_Data * d, Message * m)
 ** @param DestBitIndex 拷贝目的，位数，非8位对齐位数 offset%8
 ** @param DestBigEndian
 **/
-void
-CopyBits (UNS8 NbBits, UNS8 * SrcByteIndex, UNS8 SrcBitIndex,
+void CopyBits (UNS8 NbBits, UNS8 * SrcByteIndex, UNS8 SrcBitIndex,
           UNS8 SrcBigEndian, UNS8 * DestByteIndex, UNS8 DestBitIndex,
           UNS8 DestBigEndian)
 {
@@ -621,7 +618,8 @@ PDOEventTimerAlarm (CO_Data * d, UNS32 pdoNum)
 
 /** 
  * @ingroup pdo
- * @brief 间歇时间定时器，触发时，消除这个pdo发送通道的PDO_INHIBITED状态
+ * @brief 间歇时间定时器，触发时，消除这个pdo发送通道的PDO_INHIBITED状态. 并调用sendOnePDOevent
+ * 	说明，event的发送时取间歇时间和事件定时时间的最大值
  * @param *d Pointer on a CAN object data structure
  * @param pdoNum The PDO number
  */

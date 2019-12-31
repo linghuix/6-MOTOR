@@ -169,16 +169,27 @@ void Epos_setMode(Epos* epos, Uint16 mode){
     SDO_Write(epos,OP_MODE,0x00,mode); 
                 
     switch(mode){
-        
-        case(CSP):
+
+	/** EPOS4 **/
+			case(CSP):
+				/*Target position 0x607A0020
+						Position input value for the position controller (linear 
+						interpolation between PDO values)
+				Position offset 0x60B0
+						Optional additive position value which is added to the target 
+						position (linear interpolation between PDO values)
+				Torque offset*/
 				
                 SDO_Write(epos, OD_P_DECELERATION, 0x00,3000); 
                 SDO_Write(epos, OD_QS_DECELERATION , 0x00, 5000);
 				
-					      SDO_Write(epos, OD_Following_ERR_window , 0x00, 0);
+				SDO_Write(epos, OD_Following_ERR_window , 0x00, 0);
 				
-                SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);                //-2147483648
-                SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);                //2147483647
+                SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);   //-2147483648
+                SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);   //2147483647
+
+				SDO_Write(epos, Interpolation_Time_Period_2, 0x02 , -3);
+				SDO_Write(epos, Interpolation_Time_Period_1, 0x01, 10);	//10ms PDO
 				
                 break;
         
@@ -222,8 +233,8 @@ void Epos_setMode(Epos* epos, Uint16 mode){
                 
         case(Interpolated_Position_Mode):
                 SDO_Write(epos, OD_Interpolation_Sub_Mode, 0x00,(Uint32)(-1));//always -1 cubic spline interpolation (PVT)
-                SDO_Write(epos, Interpolation_Time_Period, 0x01,1);//always 1
-                SDO_Write(epos, Interpolation_Time_Period, 0x02,(Uint32)(-3));//always -3  插值周期 10^-3s
+                SDO_Write(epos, Interpolation_Time_Period_1, 0x01,1);//always 1
+                SDO_Write(epos, Interpolation_Time_Period_2, 0x02,(Uint32)(-3));//always -3  插值周期 10^-3s
                 SDO_Write(epos, Soft_P_Limit_Min, 0x01, 0x80000000);                //-2147483648
                 SDO_Write(epos, Soft_P_Limit_Max, 0x02, 0x7FFFFFFF);                //2147483647
                 //SDO_Write(epos,OD_Position_Window, 0x00,4294967295);             //关闭 position window 

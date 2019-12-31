@@ -138,7 +138,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3>"" ()</Flash3>
+          <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -335,7 +335,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F10X_HD,DEBUG_ERR_CONSOLE_ON,DEBUG_WAR_CONSOLE_ON</Define>
+              <Define>STM32F10X_HD</Define>
               <Undefine></Undefine>
               <IncludePath>..\App;..\Bsp;..\Libraries\CMSIS\CoreSupport;..\Libraries\CMSIS\DeviceSupport;..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\FreeRTOS\include;..\FreeRTOS\portable\RVDS\ARM_CM3;..\CANOpen\inc;..\CANOpen\inc\stm32;..\App\canopen;..\EPOS</IncludePath>
             </VariousControls>
@@ -680,6 +680,11 @@
               <FileName>nmt_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\EPOS\nmt_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>state_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\EPOS\state_control.c</FilePath>
             </File>
           </Files>
         </Group>

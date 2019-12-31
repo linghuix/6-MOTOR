@@ -235,9 +235,12 @@ void setTimer(TIMEVAL value)
 
   elapsed_time += timer - last_counter_val;
   last_counter_val = CANOPEN_TIM_PERIOD - value;
+  
+  //强制修改定时器计数，因此有elapsed_time
   TIM_SetCounter(CANOPEN_TIMx, CANOPEN_TIM_PERIOD - value);
-  TIM_Cmd(CANOPEN_TIMx, ENABLE);
+  TIM_Cmd(CANOPEN_TIMx, ENABLE);	//value后触发中断
 }
+
 
 /************************************************
 函数名称 ： getElapsedTime
@@ -253,7 +256,7 @@ TIMEVAL getElapsedTime(void)
   if(timer < last_counter_val)
     timer += CANOPEN_TIM_PERIOD;
 
-  TIMEVAL elapsed = timer - last_counter_val + elapsed_time;
+  TIMEVAL elapsed = timer - last_counter_val + elapsed_time;//若中断前加入两次新的定时事件，必须加上旧的elapsed_time
 
   return elapsed;
 }

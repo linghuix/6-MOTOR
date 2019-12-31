@@ -145,11 +145,11 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /************************************************
-º¯ÊıÃû³Æ £º DEBUG_COM_IRQHandler
-¹¦    ÄÜ £º USARTxÖĞ¶Ï(µ÷ÊÔ)
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š DEBUG_COM_IRQHandler
+åŠŸ    èƒ½ ï¼š USARTxä¸­æ–­(è°ƒè¯•)
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void DEBUG_COM_IRQHandler(void)
 {
@@ -160,16 +160,16 @@ void DEBUG_COM_IRQHandler(void)
     Data = USART_ReceiveData(DEBUG_COM);
 
 //  CLI_RcvDateFromISR(Data);
-    USART_SendData(DEBUG_COM, Data);             //ÔİÎ´Ê¹ÓÃ½ÓÊÕ
+    USART_SendData(DEBUG_COM, Data);             //æš‚æœªä½¿ç”¨æ¥æ”¶
   }
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CAN_RX_IRQHandler
-¹¦    ÄÜ £º CAN½ÓÊÕÖĞ¶Ï
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CAN_RX_IRQHandler
+åŠŸ    èƒ½ ï¼š CANæ¥æ”¶ä¸­æ–­
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CAN_RX_IRQHandler(void)
 {
@@ -181,11 +181,11 @@ void CAN_RX_IRQHandler(void)
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º CANOPEN_TIM_IRQ_Handler
-¹¦    ÄÜ £º CANOpen¶¨Ê±ÖĞ¶Ï
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANOPEN_TIM_IRQ_Handler
+åŠŸ    èƒ½ ï¼š CANOpenå®šæ—¶ä¸­æ–­
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANOPEN_TIM_IRQ_Handler(void)
 {

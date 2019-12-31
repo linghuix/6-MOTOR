@@ -77,7 +77,7 @@ enum E_OBJ_MODE
 	      Position_offset = 0x60B0,
 	      Torque_offset = 0x60B2,
         //out
-        Pos_Actual_Value = 0x6064,
+          Pos_Actual_Value = 0x6064,
 	      Velocity_actual_value = 0x606C,
 	      Torque_actual_value = 0x6077,
         
@@ -199,7 +199,7 @@ enum E_OBJ_DICTIONARY
     
     OD_MAX_P_VELOCITY = 0x607F0020, //UNSIGNED32, [1, 25000]
 
-	  OD_MAX_MOTOR_SPEED = 0x60800020, //0x00, UNSIGNED32,
+		OD_MAX_MOTOR_SPEED = 0x60800020, //0x00, UNSIGNED32,
 
     OD_P_VELOCITY = 0x6081,     //Profile velocity, Sub-index 0x00, UNSIGNED32, Unit:rpm
     OD_P_ACCELERATION = 0x60830020, //profile acceleration, Sub-index 0x00,UNSIGNED32
@@ -209,7 +209,9 @@ enum E_OBJ_DICTIONARY
     OD_Motion_Profile_Type = 0x60860010,
     
     OD_Interpolation_Sub_Mode = 0x60C0,
-    Interpolation_Time_Period = 0x60C2,
+    Interpolation_Time_Period_1 = 0x60C20108,//time between two PDOs
+		Interpolation_Time_Period_2 = 0x60C20208,//unit   -3对应ms
+	
     Interpolation_Data_Configuration = 0x60C4,
     
     OD_Max_Acceleration = 0x60C50020,

@@ -1,64 +1,64 @@
 /**
   ******************************************************************************
-  * @ÎÄ¼şÃû     £º bsp_timer.c
-  * @×÷Õß       £º strongerHuang
-  * @°æ±¾       £º V1.0.0
-  * @ÈÕÆÚ       £º 2018Äê11ÔÂ14ÈÕ
-  * @ÕªÒª       £º TIMµ×²ãÔ´ÎÄ¼ş
+  * @æ–‡ä»¶å     ï¼š bsp_timer.c
+  * @ä½œè€…       ï¼š strongerHuang
+  * @ç‰ˆæœ¬       ï¼š V1.0.0
+  * @æ—¥æœŸ       ï¼š 2018å¹´11æœˆ14æ—¥
+  * @æ‘˜è¦       ï¼š TIMåº•å±‚æºæ–‡ä»¶
   ******************************************************************************/
 /*----------------------------------------------------------------------------
-  ¸üĞÂÈÕÖ¾:
-  2018-11-14 V1.0.0:³õÊ¼°æ±¾
+  æ›´æ–°æ—¥å¿—:
+  2018-11-14 V1.0.0:åˆå§‹ç‰ˆæœ¬
   ----------------------------------------------------------------------------*/
-/* °üº¬µÄÍ·ÎÄ¼ş --------------------------------------------------------------*/
+/* åŒ…å«çš„å¤´æ–‡ä»¶ --------------------------------------------------------------*/
 #include "bsp_timer.h"
 
 
-/****************************************** CANOpen¶¨Ê± ******************************************/
+/****************************************** CANOpenå®šæ—¶ ******************************************/
 /************************************************
-º¯ÊıÃû³Æ £º CANOpen_TIM_Configuration
-¹¦    ÄÜ £º CANOpen¶¨Ê±ÅäÖÃ
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š CANOpen_TIM_Configuration
+åŠŸ    èƒ½ ï¼š CANOpenå®šæ—¶é…ç½®
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void CANOpen_TIM_Configuration(void)
 {
   NVIC_InitTypeDef        NVIC_InitStructure;
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 
-  /* Ê±ÖÓÅäÖÃ */
+  /* æ—¶é’Ÿé…ç½® */
   RCC_APB1PeriphClockCmd(CANOPEN_TIM_CLK, ENABLE);
 
-  /* NVICÅäÖÃ */
+  /* NVICé…ç½® */
   NVIC_InitStructure.NVIC_IRQChannel = CANOPEN_TIM_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = CANOPEN_TIM_Priority;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  /* Ê±»ùÅäÖÃ */
-  TIM_TimeBaseStructure.TIM_Prescaler = CANOPEN_TIM_PRESCALER_VALUE; //Ô¤·ÖÆµÖµ
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;        //ÏòÉÏ¼ÆÊıÄ£Ê½
-  TIM_TimeBaseStructure.TIM_Period = CANOPEN_TIM_PERIOD;             //×î´ó¼ÆÊıÖµ(ÖÜÆÚ)
-  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;            //Ê±ÖÓ·ÖÆµÒò×Ó
+  /* æ—¶åŸºé…ç½® */
+  TIM_TimeBaseStructure.TIM_Prescaler = CANOPEN_TIM_PRESCALER_VALUE; //é¢„åˆ†é¢‘å€¼
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;        //å‘ä¸Šè®¡æ•°æ¨¡å¼
+  TIM_TimeBaseStructure.TIM_Period = CANOPEN_TIM_PERIOD;             //æœ€å¤§è®¡æ•°å€¼(å‘¨æœŸ)
+  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;            //æ—¶é’Ÿåˆ†é¢‘å› å­
   TIM_TimeBaseInit(CANOPEN_TIMx, &TIM_TimeBaseStructure);
 
-  /* Ê¹ÄÜÖĞ¶Ï */
-  TIM_ClearFlag(CANOPEN_TIMx, TIM_IT_Update);                        //Çå³ı±êÖ¾
-  TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, ENABLE);                 //Ê¹ÄÜ TIMx ¸üĞÂÖĞ¶Ï
+  /* ä½¿èƒ½ä¸­æ–­ */
+  TIM_ClearFlag(CANOPEN_TIMx, TIM_IT_Update);                        //æ¸…é™¤æ ‡å¿—
+  TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, ENABLE);                 //ä½¿èƒ½ TIMx æ›´æ–°ä¸­æ–­
 
-  /* ³õÊ¼»¯ */
+  /* åˆå§‹åŒ– */
   TIM_SetCounter(CANOPEN_TIMx, 0);
   TIM_Cmd(CANOPEN_TIMx, ENABLE);
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º TIM_Initializes
-¹¦    ÄÜ £º TIM³õÊ¼»¯
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º strongerHuang
+å‡½æ•°åç§° ï¼š TIM_Initializes
+åŠŸ    èƒ½ ï¼š TIMåˆå§‹åŒ–
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š strongerHuang
 *************************************************/
 void TIM_Initializes(void)
 {

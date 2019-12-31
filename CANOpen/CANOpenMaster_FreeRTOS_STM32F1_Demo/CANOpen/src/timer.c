@@ -19,6 +19,9 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+
+
 /*!
 ** @file   timer.c
 ** @author Edouard TISSERANT and Francis DUPIN
@@ -39,13 +42,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 s_timer_entry timers[MAX_NB_TIMER] = {{TIMER_FREE, NULL, NULL, 0, 0, 0},};
 
 TIMEVAL total_sleep_time = TIMEVAL_MAX;
-TIMER_HANDLE last_timer_raw = -1;
+TIMER_HANDLE last_timer_raw = -1;		//当前已经使用的序号最大的一个定时器
 
 #define min_val(a,b) ((a<b)?a:b)
 
 /*!
 ** -------  Use this to declare a new alarm ------
-**
+** Set an alarm to execute a callback function when expired.
 ** @param d
 ** @param id
 ** @param callback
@@ -74,7 +77,8 @@ TIMER_HANDLE SetAlarm(CO_Data* d, UNS32 id, TimerCallback_t callback, TIMEVAL va
 			/* set next wakeup alarm if new entry is sooner than others, or if it is alone */
 			real_timer_value = value;
 			real_timer_value = min_val(real_timer_value, TIMEVAL_MAX);
-
+			
+			//计算定时器到点是否，比已经注册了的定时器块
 			if (total_sleep_time > elapsed_time && total_sleep_time - elapsed_time > real_timer_value)
 			{
 				total_sleep_time = elapsed_time + real_timer_value;
@@ -83,7 +87,7 @@ TIMER_HANDLE SetAlarm(CO_Data* d, UNS32 id, TimerCallback_t callback, TIMEVAL va
 			row->callback = callback;
 			row->d = d;
 			row->id = id;
-			row->val = value + elapsed_time;
+			row->val = value + elapsed_time;	//加上失去的时间
 			row->interval = period;
 			row->state = TIMER_ARMED;
 			return row_number;
@@ -92,6 +96,7 @@ TIMER_HANDLE SetAlarm(CO_Data* d, UNS32 id, TimerCallback_t callback, TIMEVAL va
 
 	return TIMER_NONE;
 }
+
 
 /*!
 **  -----  Use this to remove an alarm ----
@@ -115,18 +120,20 @@ TIMER_HANDLE DelAlarm(TIMER_HANDLE handle)
 
 /*!
 ** ------  TimeDispatch is called on each timer expiration ----
-**
+** 定时器中断中调用
 **/
 int tdcount=0;
 void TimeDispatch(void)
 {
 	TIMER_HANDLE i;
-	TIMEVAL next_wakeup = TIMEVAL_MAX; /* used to compute when should normaly occur next wakeup */
-	/* First run : change timer state depending on time */
-	/* Get time since timer signal */
-	UNS32 overrun = (UNS32)getElapsedTime();
+	TIMEVAL next_wakeup = TIMEVAL_MAX; /* used to compute when should normaly occur next wakeup 所有timer中最小的唤醒时间*/
+	
 
-	TIMEVAL real_total_sleep_time = total_sleep_time + overrun;
+	/* First run : change timer state depending on time */
+	/* Get time since timer signal 获取中断发生之后经过的时间*/
+	UNS32 overrun = (UNS32)getElapsedTime();//此时 elapsetime和lastcounterval都是0。防止两个很接近的定时，被遗漏
+
+	TIMEVAL real_total_sleep_time = total_sleep_time + overrun;//定时器真实沉睡时间
 
 	s_timer_entry *row;
 
@@ -140,7 +147,7 @@ void TimeDispatch(void)
 				{
 					row->state = TIMER_TRIG; /* ask for trig */
 				}
-				else /* or period have expired */
+				else /* or period have expired 是周期触发的*/
 				{
 					/* set val as interval, with 32 bit overrun correction, */
 					/* modulo for 64 bit not available on all platforms     */
@@ -166,15 +173,15 @@ void TimeDispatch(void)
 	/* Remember how much time we should sleep. */
 	total_sleep_time = next_wakeup;
 
-	/* Set timer to soonest occurence */
+	/*** 很重要     Set timer to soonest occurence */
 	setTimer(next_wakeup);
 
 	/* Then trig them or not. */
 	for(i=0, row = timers; i<=last_timer_raw; i++, row++)
 	{
-		if (row->state & TIMER_TRIG)
+		if (row->state & TIMER_TRIG) //TIMER_TRIG_PERIOD也满足条件
 		{
-			row->state &= ~TIMER_TRIG; /* reset trig state (will be free if not periodic) */
+			row->state &= ~TIMER_TRIG; /* reset trig state (will be free if not periodic) TIMER_TRIG_PERIOD 变成TIMER_ARMED*/
 			if(row->callback)
 				(*row->callback)(row->d, row->id); /* trig ! */
 		}

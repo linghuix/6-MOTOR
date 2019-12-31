@@ -73,7 +73,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     UNS32 TestMaster_obj1005 = 0x40000080 ;   /* start 0x40000080*/
 
 /* index 0x1006 :   Communication / Cycle Period */
-                    UNS32 TestMaster_obj1006 = 0xC350;   /* 50000us */
+                    UNS32 TestMaster_obj1006 = 0x2710;   /* 0x1388us */
 
 /* index 0x100C :   Guard Time */ 
                     UNS16 TestMaster_obj100C = 0x0;   /* 0 */
@@ -319,6 +319,42 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 						 { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1803_compatibility_entry, NULL },
 						 { RW, uint16,  sizeof (UNS16), (void*)&TestMaster_obj1803_event_time, NULL },
 					 };
+
+/* index 0x1804 :   TPDO 4 .    Index 1804h-19FFh,  Transmit PDO Communication Parameter  
+										 当我需要配置其他节点的字典值时，我变成了客户端，要求服务器自己修改自己*/ 
+					UNS8 ClientNumber_0x1804 = 5;
+					UNS32 TestMaster_obj1804_COB_ID_PDO = 0x40000581;//服务器，也就是需要修改的节点
+					UNS8 TestMaster_obj1804_Transmiss_Type  = TRANS_EVERY_N_SYNC(1);
+					UNS16 TestMaster_obj1804_Inhibit_time = 10;
+					UNS8 TestMaster_obj1804_compatibility_entry = 0;
+					UNS16 TestMaster_obj1804_event_time  = 0;
+					subindex TestMaster_Index1804[] = 
+					 {
+						 { RO, uint8,  sizeof (UNS8), (void*)&ClientNumber_0x1804, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1804_COB_ID_PDO, NULL },
+						 { RO, uint8, sizeof (UNS8), (void*)&TestMaster_obj1804_Transmiss_Type, NULL },
+						 { RW, uint16,  sizeof (UNS16), (void*)&TestMaster_obj1804_Inhibit_time, NULL },
+						 { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1804_compatibility_entry, NULL },
+						 { RW, uint16,  sizeof (UNS16), (void*)&TestMaster_obj1804_event_time, NULL },
+					 };
+					 
+/* index 0x1805 :   TPDO 4 .    Index 1805h-19FFh,  Transmit PDO Communication Parameter  
+										 当我需要配置其他节点的字典值时，我变成了客户端，要求服务器自己修改自己*/ 
+					UNS8 ClientNumber_0x1805 = 5;
+					UNS32 TestMaster_obj1805_COB_ID_PDO = 0x40000681;//服务器，也就是需要修改的节点
+					UNS8 TestMaster_obj1805_Transmiss_Type  = TRANS_EVERY_N_SYNC(1);
+					UNS16 TestMaster_obj1805_Inhibit_time = 10;
+					UNS8 TestMaster_obj1805_compatibility_entry = 0;
+					UNS16 TestMaster_obj1805_event_time  = 0;
+					subindex TestMaster_Index1805[] = 
+					 {
+						 { RO, uint8,  sizeof (UNS8), (void*)&ClientNumber_0x1805, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1805_COB_ID_PDO, NULL },
+						 { RO, uint8, sizeof (UNS8), (void*)&TestMaster_obj1805_Transmiss_Type, NULL },
+						 { RW, uint16,  sizeof (UNS16), (void*)&TestMaster_obj1805_Inhibit_time, NULL },
+						 { RW, uint8, sizeof (UNS8), (void*)&TestMaster_obj1805_compatibility_entry, NULL },
+						 { RW, uint16,  sizeof (UNS16), (void*)&TestMaster_obj1805_event_time, NULL },
+					 };
 					 
 /* 0x1A00  Index 1A00h-1BFFh，Transmit PDO Mapping Parameter */
 					UNS8 TestMaster_obj1A00_Number_mapped = 2; //服务器，也就是需要修改的节点
@@ -343,7 +379,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 					 };
 
 /* 0x1A02	 Index 1A02h-1BFFh，Transmit PDO Mapping Parameter */
-					 UNS8 TestMaster_obj1A02_Number_mapped = 1; //服务器，也就是需要修改的节点
+					 UNS8 TestMaster_obj1A02_Number_mapped = 2; //服务器，也就是需要修改的节点
 					 UNS32 TestMaster_obj1A02_1_mapped = 0x60400010;
 					 UNS32 TestMaster_obj1A02_2_mapped = 0x607A0020;
 					 subindex TestMaster_Index1A02[] = 
@@ -354,7 +390,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 					 };
 						 
  /* 0x1A03	 Index 1A03h-1BFFh，Transmit PDO Mapping Parameter */
-					 UNS8 TestMaster_obj1A03_Number_mapped = 1; //服务器，也就是需要修改的节点
+					 UNS8 TestMaster_obj1A03_Number_mapped = 2; //服务器，也就是需要修改的节点
 					 UNS32 TestMaster_obj1A03_1_mapped = 0x60700020;
 					 UNS32 TestMaster_obj1A03_2_mapped = 0x607A0020;
 					 subindex TestMaster_Index1A03[] = 
@@ -364,6 +400,28 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1A03_2_mapped, NULL },
 					 };
 
+ /* 0x1A04	 Index 1A04h-1BFFh，Transmit PDO Mapping Parameter */
+					 UNS8 TestMaster_obj1A04_Number_mapped = 2; //服务器，也就是需要修改的节点
+					 UNS32 TestMaster_obj1A04_1_mapped = 0x60700020;
+					 UNS32 TestMaster_obj1A04_2_mapped = 0x607A0020;
+					 subindex TestMaster_Index1A04[] = 
+					 {
+						 { RO, uint8, sizeof (UNS8), (void*)&TestMaster_obj1A04_Number_mapped, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1A04_1_mapped, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1A04_2_mapped, NULL },
+					 };
+					 
+ /* 0x1A05	 Index 1A05h-1BFFh，Transmit PDO Mapping Parameter */
+					 UNS8 TestMaster_obj1A05_Number_mapped = 2; //服务器，也就是需要修改的节点
+					 UNS32 TestMaster_obj1A05_1_mapped = 0x60700020;
+					 UNS32 TestMaster_obj1A05_2_mapped = 0x607A0020;
+					 subindex TestMaster_Index1A05[] = 
+					 {
+						 { RO, uint8, sizeof (UNS8), (void*)&TestMaster_obj1A05_Number_mapped, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1A05_1_mapped, NULL },
+						 { RO, uint32, sizeof (UNS32), (void*)&TestMaster_obj1A05_2_mapped, NULL },
+					 };
+					 
 /* 0x6040   Controlword */
 					UNS16 Controlword = 0x7F;//服务器，也就是需要修改的节点
                     subindex TestMaster_Index6040[] = 
@@ -435,10 +493,16 @@ const indextable TestMaster_objdict[] =
 	{ (subindex*)TestMaster_Index1801,sizeof(TestMaster_Index1801)/sizeof(TestMaster_Index1801[0]), 0x1801},
 	{ (subindex*)TestMaster_Index1802,sizeof(TestMaster_Index1802)/sizeof(TestMaster_Index1802[0]), 0x1802},
 	{ (subindex*)TestMaster_Index1803,sizeof(TestMaster_Index1803)/sizeof(TestMaster_Index1803[0]), 0x1803},
+	{ (subindex*)TestMaster_Index1804,sizeof(TestMaster_Index1804)/sizeof(TestMaster_Index1804[0]), 0x1804},
+	{ (subindex*)TestMaster_Index1805,sizeof(TestMaster_Index1805)/sizeof(TestMaster_Index1805[0]), 0x1805},
+	
 	{ (subindex*)TestMaster_Index1A00,sizeof(TestMaster_Index1A00)/sizeof(TestMaster_Index1A00[0]), 0x1A00},
 	{ (subindex*)TestMaster_Index1A01,sizeof(TestMaster_Index1A01)/sizeof(TestMaster_Index1A01[0]), 0x1A01},
 	{ (subindex*)TestMaster_Index1A02,sizeof(TestMaster_Index1A02)/sizeof(TestMaster_Index1A02[0]), 0x1A02},
 	{ (subindex*)TestMaster_Index1A03,sizeof(TestMaster_Index1A03)/sizeof(TestMaster_Index1A03[0]), 0x1A03},
+	{ (subindex*)TestMaster_Index1A04,sizeof(TestMaster_Index1A04)/sizeof(TestMaster_Index1A04[0]), 0x1A04},
+	{ (subindex*)TestMaster_Index1A05,sizeof(TestMaster_Index1A05)/sizeof(TestMaster_Index1A05[0]), 0x1A05},
+
 	{ (subindex*)TestMaster_Index6040,sizeof(TestMaster_Index6040)/sizeof(TestMaster_Index6040[0]), 0x6040},
 	{ (subindex*)TestMaster_Index607A,sizeof(TestMaster_Index607A)/sizeof(TestMaster_Index607A[0]), 0x607A},
 	{ (subindex*)TestMaster_Index6060,sizeof(TestMaster_Index6060)/sizeof(TestMaster_Index6060[0]), 0x6060},
@@ -477,19 +541,23 @@ const indextable * TestMaster_scanIndexOD (CO_Data *d, UNS16 wIndex, UNS32 * err
 		case 0x1801: i = 15;break;
 		case 0x1802: i = 16;break;
 		case 0x1803: i = 17;break;
+		case 0x1804: i = 18;break;
+		case 0x1805: i = 19;break;
 		
-		case 0x1A00: i = 18;break;/* PDO_TRS_MAP */
-		case 0x1A01: i = 19;break;
-		case 0x1A02: i = 20;break;
-		case 0x1A03: i = 21;break;
+		case 0x1A00: i = 20;break;/* PDO_TRS_MAP */
+		case 0x1A01: i = 21;break;
+		case 0x1A02: i = 22;break;
+		case 0x1A03: i = 23;break;
+		case 0x1A04: i = 24;break;
+		case 0x1A05: i = 25;break;
 		
-		case 0x6040: i = 22;break;
-		case 0x607A: i = 23;break;
-		case 0x6060: i = 24;break;
-		case 0x6065: i = 25;break;
-		case 0x6070: i = 26;break;
-		case 0x6075: i = 27;break;
-		case 0x6080: i = 28;break;
+		case 0x6040: i = 26;break;
+		case 0x607A: i = 27;break;
+		case 0x6060: i = 28;break;
+		case 0x6065: i = 29;break;
+		case 0x6070: i = 30;break;
+		case 0x6075: i = 31;break;
+		case 0x6080: i = 32;break;
 
 		default:
 			*errorCode = OD_NO_SUCH_OBJECT;
@@ -505,8 +573,9 @@ const indextable * TestMaster_scanIndexOD (CO_Data *d, UNS16 wIndex, UNS32 * err
  * Even if no pdoTransmit are defined, at least one entry is computed
  * for compilations issues.
  */
-s_PDO_status TestMaster_PDO_status[4] = 
-	{s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer};
+s_PDO_status TestMaster_PDO_status[6] = 
+	{s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer,
+	s_PDO_status_Initializer,s_PDO_status_Initializer,s_PDO_status_Initializer};
 
 const quick_index TestMaster_firstIndex = {
   4, /* SDO_SVR */
@@ -514,7 +583,7 @@ const quick_index TestMaster_firstIndex = {
   0, /* PDO_RCV */
   0, /* PDO_RCV_MAP */
   14, /* PDO_TRS */
-  18 /* PDO_TRS_MAP */
+  20 /* PDO_TRS_MAP */
 };
 
 const quick_index TestMaster_lastIndex = {
@@ -522,8 +591,8 @@ const quick_index TestMaster_lastIndex = {
   5, /* SDO_CLT */
   0, /* PDO_RCV */
   0, /* PDO_RCV_MAP */
-  17, /* PDO_TRS */
-  21 /* PDO_TRS_MAP */
+  19, /* PDO_TRS */
+  25 /* PDO_TRS_MAP */
 };
 
 const UNS16 TestMaster_ObjdictSize = sizeof(TestMaster_objdict)/sizeof(TestMaster_objdict[0]); 

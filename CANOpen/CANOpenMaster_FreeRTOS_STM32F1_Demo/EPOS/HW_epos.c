@@ -198,7 +198,7 @@ __IO uint32_t flag = 0xff;          //用于标志是否接收到数据，在中
 UNS32 pos=0;                       //电机位置
 int x=0;                            //角度自变
 int angle_sensor;
-	
+
 void Epos_Conroller_TIMBack(){
 
 		//printf("%d\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));

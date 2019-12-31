@@ -1,5 +1,5 @@
-#ifndef __SDO_H
-#define __SDO_H
+#ifndef __sdo_control_H
+#define __sdo_control_H
 
 #include "stm32f10x.h"
 #include "stm32f10x_can.h"

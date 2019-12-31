@@ -39,6 +39,6 @@ void _post_TPDO(CO_Data* d){
 	if(posIndex == 10) posIndex = 0;
 
   
-	printf("-----------------PDO_Init---------------------\r\n");
+	//printf("-----------------PDO_Init---------------------\r\n");
 	//vTaskDelay(500);
 }
