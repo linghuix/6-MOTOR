@@ -8,9 +8,9 @@
  */
 void BSP_Init(void)
 {
-    SystemInit();		/* 配置系统时钟为72M */	
+  SystemInit();		/* 配置系统时钟为72M */	
 	SysTick_init();		/* 初始化并使能SysTick定时器 */
-    GPIO_Config(); 
+  GPIO_Config(); 
 	USART_init();
 	CAN_Initializes();
 	TIM_Initializes();

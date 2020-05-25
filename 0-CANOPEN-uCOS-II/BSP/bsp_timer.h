@@ -26,7 +26,7 @@
 
 #define CANOPEN_TIM_COUNTER_CLOCK           100000         //计数时钟(100K次/秒)
                                                            //预分频值
-#define CANOPEN_TIM_PRESCALER_VALUE         (SystemFrequency/CANOPEN_TIM_COUNTER_CLOCK - 1)
+#define CANOPEN_TIM_PRESCALER_VALUE         (SystemFrequency_SysClk/CANOPEN_TIM_COUNTER_CLOCK - 1)
 #define CANOPEN_TIM_PERIOD                  65535          //定时周期
 
 

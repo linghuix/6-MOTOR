@@ -31,10 +31,6 @@ int main(void)
 *
 * Description: 闪烁灯提示
 *
-* Arguments  : none
-*
-* Returns    : none
-*
 * Note(s)    : 
 *********************************************************************************************************
 */
@@ -65,18 +61,46 @@ void          App_TaskReturnHook      (OS_TCB          *ptcb){};
 */
 
 void          App_TaskStatHook        (void){
-
-	printf("CPU Usage = %d %% \r\n", OSCPUUsage);
+	
+	
+	OS_TCB *ptcb;
+	INT8U prio;
+	#if OS_CRITICAL_METHOD == 3u                     /* Allocate storage for CPU status register           */
+    OS_CPU_SR  cpu_sr = 0u;
+	#endif
+	
+	//OS_ENTER_CRITICAL();
+	OSSchedLock();
+	
+	printf("CPUsage = %d %%\r\n", OSCPUUsage);
+	
+	printf("prior task\t\tstack used\r\n");
+	
+	for (prio = 0u; prio <= OS_TASK_IDLE_PRIO; prio++) {
+			ptcb = OSTCBPrioTbl[prio];
+			if (ptcb != (OS_TCB *)0) {                               /* Make sure task 'ptcb' is ...   */
+					if (ptcb != OS_TCB_RESERVED) {                       /* ... still valid.               */
+#if OS_TASK_PROFILE_EN > 0u
+							printf("%d\t\t\t%d/%d\r\n",prio, ptcb->OSTCBStkUsed, ptcb->OSTCBStkSize);
+#endif
+					}
+			}
+	}
+	
+	OSSchedUnlock();
+	//OS_EXIT_CRITICAL();
 };
 
 
 void          App_TaskSwHook          (void){
-	printf("\r\ntask %d->task %d\r\n",*(OSTCBCur->OSTCBTaskName),*(OSTCBHighRdy->OSTCBTaskName));
+	
+	printf("\r\n%d:%d->%d\r\n",OSTime,OSTCBCur->OSTCBPrio,OSTCBHighRdy->OSTCBPrio);
+
 };
 
 /*TCB初始化时调用的函数，可以在这里定义TCB的名称，等属性。此时传入TCB优先级等都已经初始化好了*/
 void          App_TCBInitHook         (OS_TCB          *ptcb){
-	ptcb->OSTCBTaskName =  &(ptcb->OSTCBPrio);
+	//ptcb->OSTCBTaskName =  &(ptcb->OSTCBPrio);
 };
 
 void          App_TimeTickHook        (void){};

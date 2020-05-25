@@ -46,6 +46,7 @@
   */
 void NMI_Handler(void)
 {
+	printf(" NMI_Handler !!!\r\n");
 }
 
 /**
@@ -176,7 +177,7 @@ void SysTick_Handler(void)
 *************************************************/
 void CAN_RX_IRQHandler(void)
 {
-	printf(" CAN_RX_IRQHandler !!!\r\n");
+	printf("%d, CAN_RX_IRQHandler !!!\r\n", OSTime);
 
   CANRcv_DateFromISR();
 }
@@ -190,14 +191,15 @@ void CAN_RX_IRQHandler(void)
 *************************************************/
 void CANOPEN_TIM_IRQ_Handler(void)
 {
-	printf(" CANOPEN_TIM_IRQ_Handler !!!\r\n");
+	OSIntEnter();
+	printf("%d, CANOPEN_TIM_IRQ_Handler !!!\r\n",OSTime);
 
-  if(TIM_GetITStatus(CANOPEN_TIMx, TIM_IT_Update) != RESET)
-  {
+  if(TIM_GetITStatus(CANOPEN_TIMx, TIM_IT_Update) != RESET){
     TIM_ClearITPendingBit(CANOPEN_TIMx, TIM_IT_Update);
-
     TIMx_DispatchFromISR();
   }
+		
+	OSIntExit();
 }
 /**
   * @}

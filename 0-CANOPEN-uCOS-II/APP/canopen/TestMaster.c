@@ -73,7 +73,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     UNS32 TestMaster_obj1005 = 0x40000080 ;   /* start 0x40000080*/
 
 /* index 0x1006 :   Communication / Cycle Period */
-                    UNS32 TestMaster_obj1006 = 0x1E8480;   /* 0x1388us 0x2710*/
+                    UNS32 TestMaster_obj1006 = 0xF4240;   /* 0x10000us 0x2710  1s 0xF4240 50ms 0x7A120*/
 
 /* index 0x100C :   Guard Time */ 
                     UNS16 TestMaster_obj100C = 0x0;   /* 0 */
@@ -89,7 +89,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                     UNS32 TestMaster_obj1016[]={0};
 
 /* index 0x1017 :   Producer Heartbeat Time. */
-                    UNS16 TestMaster_obj1017 = 0x3E8;	/* 0x1000ms */
+                    UNS16 TestMaster_obj1017 = 0x3E8;	/* 0x1000ms 0x3E8*/
                     subindex TestMaster_Index1017[] = 
                      {
                        { RW, uint16, sizeof (UNS16), (void*)&TestMaster_obj1017, NULL }
@@ -564,7 +564,7 @@ const indextable * TestMaster_scanIndexOD (CO_Data *d, UNS16 wIndex, UNS32 * err
 			return NULL;
 	}
 	*errorCode = OD_SUCCESSFUL;
-	return &TestMaster_objdict[i];
+	return &(TestMaster_objdict[i]);
 }
 
 

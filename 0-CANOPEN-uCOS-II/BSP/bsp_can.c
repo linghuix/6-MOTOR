@@ -41,7 +41,6 @@ void CAN_GPIO_Configuration(void)
   if(GPIOB == CAN_GPIO_PORT)
   {
     GPIO_PinRemapConfig(GPIO_Remap1_CAN1 , ENABLE);
-//  GPIO_PinRemapConfig(GPIO_Remap2_CAN1 , ENABLE);
   }
 }
 

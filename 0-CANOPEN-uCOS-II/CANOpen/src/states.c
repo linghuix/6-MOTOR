@@ -168,7 +168,7 @@ UNS8 setState(CO_Data* d, e_nodeState newState)
 				switchCommunicationState(d, &newCommunicationState);
 				/* call user app init callback now. */
 				/* d->initialisation MUST NOT CALL SetState */
-				(*d->initialisation)(d);				
+				(*d->initialisation)(d);	
 			}
 
 			/* Automatic transition - No break statement ! */
@@ -326,7 +326,7 @@ void setNodeId(CO_Data* d, UNS8 nodeId)
 /*--------------------------------------*/
 /*--------------------------------------*/
 
-void _initialisation(CO_Data* d){(void)d;}
+void _initialisation(CO_Data* d){(void)d;MSG("complete initialisation\r\n");}
 //void _preOperational(CO_Data* d){(void)d;}
-void _operational(CO_Data* d){(void)d;}
-void _stopped(CO_Data* d){(void)d;}
+void _operational(CO_Data* d){(void)d;MSG("complete operational\r\n");}
+void _stopped(CO_Data* d){(void)d;MSG("complete stop\r\n");}

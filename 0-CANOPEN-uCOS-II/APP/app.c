@@ -51,7 +51,7 @@ void CANRcv_DateFromISR(void)
 	
 	OSQPost (CANRcv_Q, &canrxmsg[rxindex]);
 
-  	OSIntExit();
+  OSIntExit();
 }
 
 /************************************************
@@ -61,13 +61,11 @@ void CANRcv_DateFromISR(void)
 作    者 ： strongerHuang
 *************************************************/
 void TIMx_DispatchFromISR(void){
-	OSIntEnter();
-	
+
 	last_counter_val = 0;
 	elapsed_time = 0;
 	TimeDispatch();				// canopen 定时调度
-	
-	OSIntExit();
+
 }
 
 
@@ -107,7 +105,7 @@ void setTimer(TIMEVAL value)
   
   //强制修改定时器计数，因此有elapsed_time
   TIM_SetCounter(CANOPEN_TIMx, CANOPEN_TIM_PERIOD - value);
-  TIM_Cmd(CANOPEN_TIMx, ENABLE);	//value后触发中断
+  //TIM_Cmd(CANOPEN_TIMx, ENABLE);	//value后触发中断
 }
 
 
@@ -123,7 +121,7 @@ unsigned char canSend(CAN_PORT notused, Message *m)
 {
 	uint8_t i;
 
-	CanTxMsg TxMsg = cantxmsg[txindex];
+	/*CanTxMsg TxMsg = cantxmsg[txindex];
 	txindex++;									// 执行下个缓冲区，避免覆盖原来的数据
 	if(txindex == N_MESSAGES)   txindex=0;
 
@@ -137,13 +135,12 @@ unsigned char canSend(CAN_PORT notused, Message *m)
 	for(i=0; i<m->len; i++)
 	TxMsg.Data[i] = m->data[i];
 
-
-	/* 判断是否在执行中断 */
+	// 判断是否在执行中断 
 	if(OSQPost(CANSend_Q, &TxMsg) != OS_ERR_NONE)
 	{                                            //加入队列失败
 	  return 0xFF;
-	}
-
+	}*/
+	printf("can send\r\n");
   return 0;
 }
 
@@ -151,6 +148,29 @@ unsigned char canSend(CAN_PORT notused, Message *m)
 
 /********************************** 任务函数**********************************/
 
+
+void CANOpen_App_Init(void);
+void Remote_App_Init(void);
+
+void Task_Start(void *p_arg)
+{
+    (void)p_arg;                // 'p_arg' 并没有用到，防止编译器提示警告
+
+		printf("canopen motor controller ...\r\n");
+	  printf("task: \r\n2 3 5 6 7\r\n");
+
+		CANOpen_App_Init();			// canopen协议
+		Remote_App_Init();			// 红外通讯远程遥控
+		OSStatInit();
+
+    while (1)
+    {
+
+			OSTimeDlyHMSM(0, 0,10,0);
+			printf("CPU Usage = %d %% \r\n", OSCPUUsage);
+   
+    }
+}
 
 OS_Q *	gg;
 void CANOpen_App_Init(void)
@@ -160,58 +180,45 @@ void CANOpen_App_Init(void)
 	
 	gg = (OS_Q*)CANRcv_Q->OSEventPtr;
 
-	OSTaskCreate(CANRcv_Task,(void *)0,		  				//创建CANRcv_Task任务
-	   &canrcv_task_stk[TASK_A_STK_SIZE-1], TASK_canrcv_PRIO);
+	/*OSTaskCreate(CANRcv_Task,(void *)0,		  				//创建CANRcv_Task任务
+	   &canrcv_task_stk[TASK_A_STK_SIZE-1], TASK_canrcv_PRIO);*/
+	OSTaskCreateExt(CANRcv_Task,(void *)0,&canrcv_task_stk[TASK_A_STK_SIZE-1], 
+		TASK_canrcv_PRIO,0,&canrcv_task_stk[0],TASK_A_STK_SIZE,(void *)0,(OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR));
 
-	OSTaskCreate(CANSend_Task,(void *)0,				   	//创建CANSend_Task任务
-	  &cansend_task_stk[TASK_B_STK_SIZE-1], TASK_cansend_PRIO);
+	/*OSTaskCreate(CANSend_Task,(void *)0,				   	//创建CANSend_Task任务
+	  &cansend_task_stk[TASK_B_STK_SIZE-1], TASK_cansend_PRIO);*/
+	OSTaskCreateExt(CANSend_Task,(void *)0,&cansend_task_stk[TASK_B_STK_SIZE-1], 
+		TASK_cansend_PRIO,0,&cansend_task_stk[0],TASK_B_STK_SIZE,(void *)0,(OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR));
+	
 
-	OSTaskCreate(CANApp_Task,(void *)0,					  	//创建CANApp_Task任务
-		 &canapp_task_stk[TASK_A_STK_SIZE-1], TASK_canapp_PRIO);
+	/*OSTaskCreate(CANApp_Task,(void *)0,					  	//创建CANApp_Task任务
+		 &canapp_task_stk[TASK_A_STK_SIZE-1], TASK_canapp_PRIO);*/
+	OSTaskCreateExt(CANApp_Task,(void *)0,&canapp_task_stk[TASK_canapp_STK_SIZE-1], 
+		TASK_canapp_PRIO,0,&canapp_task_stk[0],TASK_canapp_STK_SIZE,(void *)0,(OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR));
 
 }
-
 
 void Remote_App_Init(void)
 {
-	
-	OSTaskCreate(Remote_Task,(void *)0,		  				//创建infrared 控制任务
-		   &remote_task_stk[TASK_A_STK_SIZE-1], TASK_remote_PRIO);
-}
-
-
-void Task_Start(void *p_arg)
-{
-    (void)p_arg;                // 'p_arg' 并没有用到，防止编译器提示警告
-
-	printf("canopen motor controller ...\r\n");
-
-//	Remote_App_Init();			// 红外通讯远程遥控
-	CANOpen_App_Init();			// canopen协议
-	OSStatInit();
-
-    while (1)
-    {
-
-		OSTimeDlyHMSM(0, 0,10,0);
-		printf("CPU Usage = %d %% \r\n", OSCPUUsage);
-   
-    }
+	/*OSTaskCreate(Remote_Task,(void *)0,		  				//创建infrared 控制任务
+		   &remote_task_stk[TASK_A_STK_SIZE-1], TASK_remote_PRIO);*/
+	OSTaskCreateExt(Remote_Task,(void *)0,&remote_task_stk[TASK_A_STK_SIZE-1], 
+		TASK_remote_PRIO,0,&remote_task_stk[0],TASK_A_STK_SIZE,(void *)0,(OS_TASK_OPT_STK_CHK | OS_TASK_OPT_STK_CLR));
 }
 
 
 void CANApp_Task(void *p_arg){
 
+	printf("CANApp_Task ...\r\n");
 	unsigned char nodeID = 0x01;				   //节点ID
 	setNodeId(&TestMaster_Data, nodeID);
 	setState(&TestMaster_Data, Initialisation);
-	setState(&TestMaster_Data, Pre_operational);	/**心跳,同步周期协议配置 */
+	setState(&TestMaster_Data, Pre_operational);	//心跳,同步周期协议配置 
 	setState(&TestMaster_Data, Operational);
 
 	for(;;)
 	{
 		OSTimeDlyHMSM(0, 0,0,5); 
-	
 	}
 
 }
@@ -228,31 +235,26 @@ void CANRcv_Task(void *p_arg)
 	(void)p_arg;   
 
 	
-	while(1)
-	{
-	  if((RxMsg = (CanRxMsg *)OSQPend(CANRcv_Q, 100, &error)) != 0)
-	  {
-		msg.cob_id = RxMsg->StdId;				   //CAN-ID
-	
-		if(CAN_RTR_REMOTE == RxMsg->RTR)
-		  msg.rtr = 1;							   //远程帧
-		else
-		  msg.rtr = 0;							   //数据帧
-	
-		msg.len = (UNS8)RxMsg->DLC;				   //长度
-	
-		for(i=0; i<RxMsg->DLC; i++)				   //数据
-		  msg.data[i] = RxMsg->Data[i];
-	
-		TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, DISABLE);
-		canDispatch(&TestMaster_Data, &msg);	   //调用协议相关接口
-		TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, ENABLE);
+	while(1){
+	  if((RxMsg = (CanRxMsg *)OSQPend(CANRcv_Q, 100, &error)) != (void *)0){
+			msg.cob_id = RxMsg->StdId;				   //CAN-ID
 		
+			if(CAN_RTR_REMOTE == RxMsg->RTR)
+				msg.rtr = 1;							   //远程帧
+			else
+				msg.rtr = 0;							   //数据帧
+		
+			msg.len = (UNS8)RxMsg->DLC;				   //长度
+		
+			for(i=0; i<RxMsg->DLC; i++)				   //数据
+				msg.data[i] = RxMsg->Data[i];
+		
+			TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, DISABLE);
+			canDispatch(&TestMaster_Data, &msg);	   //调用协议相关接口
+			TIM_ITConfig(CANOPEN_TIMx, TIM_IT_Update, ENABLE);
 	  }
 	  OSTimeDly(100);
 	}
-
-
 }
 
 //CAN 发送任务
@@ -261,34 +263,28 @@ void CANSend_Task(void *p_arg)
 	static CanTxMsg * TxMsg;
 
     (void)p_arg;   
-    while (1)
-    {
-		if((TxMsg = (CanTxMsg *)OSQPend(CANSend_Q, 100, &error)) != 0) //获取发送队列中数据
-		{
-			printf("send can\r\n");
-			if(CAN_Transmit(CANx, TxMsg) == CAN_NO_MB)
+     while (1){
+			if((TxMsg = (CanTxMsg *)OSQPend(CANSend_Q, 100, &error)) != (void *)0) //获取发送队列中数据
 			{
-				OSTimeDly(1);	//第一次发送失败, 延时1个滴答, 再次发送
-				CAN_Transmit(CANx, TxMsg);
-			}
+				printf("send can\r\n");
+				if(CAN_Transmit(CANx, TxMsg) == CAN_NO_MB){
+					OSTimeDly(1);	//第一次发送失败, 延时1个滴答, 再次发送
+					CAN_Transmit(CANx, TxMsg);
+				}
 
-		}
-		OSTimeDlyHMSM(0, 0,0,10);
+			}
+			OSTimeDlyHMSM(0, 0,0,10);
     }
 }
 
 //infrared 控制器
 void Remote_Task(void *p_arg)
 {
-    (void)p_arg;   
-	int i;
+  (void)p_arg;   
+	int *i;
 	
-    while (1)
-    {	
-    	i++;
+    while (1){	
      OSTimeDlyHMSM(0, 0,0,5);
     }
 }
-
-
 

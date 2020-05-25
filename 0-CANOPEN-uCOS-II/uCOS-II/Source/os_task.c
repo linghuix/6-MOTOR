@@ -25,7 +25,7 @@
 #include <ucos_ii.h>
 #endif
 
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        CHANGE PRIORITY OF A TASK
@@ -162,7 +162,7 @@ INT8U  OSTaskChangePrio (INT8U  oldprio,
     return (OS_ERR_NONE);
 }
 #endif
-/*$PAGE*/
+/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            CREATE A TASK
@@ -324,7 +324,7 @@ INT8U  OSTaskCreate (void   (*task)(void *p_arg),
 *              OS_ERR_TASK_CREATE_ISR  if you tried to create a task from an ISR.
 *********************************************************************************************************
 */
-/*$PAGE*/
+/*$PAGE*/
 #if OS_TASK_CREATE_EXT_EN > 0u
 INT8U  OSTaskCreateExt (void   (*task)(void *p_arg),
                         void    *p_arg,
