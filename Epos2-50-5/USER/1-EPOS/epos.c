@@ -20,6 +20,7 @@ void Epos_ParamInit(Epos* epos)
 
     SDO_Write(epos, OD_MAX_FLLW_ERR, 0x00, MAX_F_ERR);     //最大误差设置
 
+	SDO_Write(epos, OD_MOTOR_DATA, 0x04, MAX_P_V);     //最大允许速度
     SDO_Write(epos, OD_MAX_P_VELOCITY, 0x00, MAX_P_V);   //最大速度
 
     //SDO_Write(epos, OD_P_ACCELERATION, 0x00, epos->acc); //加速度
@@ -408,5 +409,5 @@ void PM_SetAngle(Epos* epos, Uint32 angle){
     
     #if defined SDO
     SDO_Write(epos, PM_SET_VALUE, 0x00, angle);
-        #endif 
+    #endif 
 }

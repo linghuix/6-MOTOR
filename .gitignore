@@ -7,6 +7,7 @@ Epos4-50-15/CMSIS/*
 Epos4-50-15/FWlib/*
 Epos4-50-15/Listing/*
 Epos4-50-15/Output/*
+Epos2_node/*
 *.bat
 *.saved_uv4
 *.o
@@ -24,3 +25,6 @@ Epos4-50-15/Output/*
 *.od
 *.txt
 *.XLH
+*.zip
+*.pc
+*.uvoptx

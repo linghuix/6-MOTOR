@@ -12,14 +12,11 @@
   */
 #include "timer.h"
 
-extern int angle_1[323];
-extern int angle_2[404];
+
 extern Epos Controller;
 extern Epos Controller1;
 
-extern Uint32 pos;										//电机位置
-extern int x;												//角度自变量 extern int x=0;是错的，不能再一次初始化
-extern int angle_sensor;
+
 
 
 extern __IO uint32_t flag;	
@@ -58,7 +55,7 @@ void TIME3_Configuration(void)
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);                                              /*定时器TIM3时钟使能*/
 
-    TIM_TimeBaseStructure.TIM_Period = 10000;                                                         /*设置在下一个更新事件装入活动的自动重装载寄存器周期的值,计数到5000为500ms*/
+    TIM_TimeBaseStructure.TIM_Period = 1000;                                                         /*设置在下一个更新事件装入活动的自动重装载寄存器周期的值,计数到5000为500ms*/
 
     TIM_TimeBaseStructure.TIM_Prescaler =(7200-1);                                                    /*设置用来作为TIMx时钟频率除数的预分频值72MHz / (7200) = 10000Hz*/
 
@@ -86,7 +83,7 @@ void TIME2_Configuration(void)
 
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);                    /*定时器TIM2时钟使能*/
     
-    TIM_TimeBaseStructure.TIM_Period = 10000;                              /*设置在下一个更新事件装入活动的自动重装载寄存器周期的值,计数到10000为10ms*/
+    TIM_TimeBaseStructure.TIM_Period = 5000;                              /*设置在下一个更新事件装入活动的自动重装载寄存器周期的值,计数到10000为10ms*/
     
     TIM_TimeBaseStructure.TIM_Prescaler =(72-1);                            /*设置用来作为TIMx时钟频率除数的预分频值 72MHz/72 = 1MHz */
     
@@ -101,23 +98,71 @@ void TIME2_Configuration(void)
     TIM_Cmd(TIM2, ENABLE);                                                  //使能TIMx外设
 }
 
+
+extern int angle_1[102], angle_0[57];
+extern int knee_1[102], knee_0[29];
+extern int test_angle[71];
+extern Uint32 pos;										//电机位置
+extern int x;												//角度自变量 extern int x=0;是错的，不能再一次初始化
+extern int angle_sensor;
+
+extern int hip_0_5m[114], hip_1_5m[204], hip_0_10m[57], hip_1_10m[102], hip_0_15m[38],hip_1_15m[68];
+extern int knee_0_5m[58], knee_1_5m[204], knee_0_10m[29], knee_1_10m[102], knee_0_15m[19],knee_1_15m[68];
+
+uint8_t start = 0;
+uint16_t endP = 102;
 void TIM2_interrupt(void){
 	//printf("%d\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));
+	
 	TIM_ClearITPendingBit(TIM2, TIM_IT_Update);		//清除中断标志
+	
+/*
+	if(start == 0){
+		endP = 29;
+		pos = knee_0[x++];
+		if( x==endP){
+			endP = 102;
+			start = 1;
+			x = 0;
+		}
+	}
+	else{
+		pos = knee_1[x++];
+		if( x==endP)
+			x = 0;
+	}
+*/
+
+	angle_sensor = SDO_Read(&Controller,0x6062,0x00);
+	printf("%d\t%d\t%d\r\n",x,pos,angle_sensor);
 
 	
-	//if(flag==0xff) flag = 0;
-	//printf("i\r\n");
+	if(start == 0){
+		endP = sizeof(knee_0_5m)/sizeof(*knee_0_5m);
+		pos = knee_0_5m[x++];
+		if( x==endP){
+			endP = sizeof(knee_1_5m)/sizeof(*knee_1_5m);
+			start = 1;
+			x = 0;
+		}
+	}
+	else{
+		pos = knee_1_5m[x++];
+		if( x==endP)
+			x = 0;
+	}
 	
-	pos = (x>=323) ? angle_2[x-323]:angle_1[x];
-	//printf("%d\r\n",pos);
-	angle_sensor = SDO_Read(&Controller,0x6062,0x00);
-	//printf("i\r\n");
+	/*endP = sizeof(test_angle)/sizeof(*test_angle);
+	pos = test_angle[x++];
+	if( x==endP)
+		x = 0;
+	*/
+	
 	PM_SetAngle(&Controller, pos);
 	//PM_SetAngle(&Controller1,pos);
+
+
 	
-	printf("%d\t%d\r\n",x,angle_sensor);
-	if( ++x==727 ) x = 0;
 	
 	//printf("%d\r\n\r\n", TIM_GetITStatus(TIM2, TIM_IT_Update));
 }

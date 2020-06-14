@@ -47,6 +47,28 @@ static void CAN_GPIO_Config(void)
 }
 
 
+static void CAN_GPIOA_Config(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	/*微狮时讚狮變*/
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
+
+
+	/* Configure CAN pin: RX */									               	 // PB8
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;	             // 蕪-摔色
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	/* Configure CAN pin: TX */									               // PB9
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;		         // 卮詢螁维摔远
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;    
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	
+}
+
 /*
  * 函数名：CAN_NVIC_Config
  * 描述  ：CAN的NVIC 配置,第1优先级组，0，0优先级
@@ -134,6 +156,7 @@ static void CAN_Filter_Config(void)
 void CAN_Config(void)
 {
   CAN_GPIO_Config();
+	//CAN_GPIOA_Config();
   CAN_NVIC_Config();
   CAN_Mode_Config();
   CAN_Filter_Config();   

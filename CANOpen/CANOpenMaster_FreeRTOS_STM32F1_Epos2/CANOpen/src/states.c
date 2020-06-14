@@ -328,5 +328,5 @@ void setNodeId(CO_Data* d, UNS8 nodeId)
 
 void _initialisation(CO_Data* d){(void)d;}
 //void _preOperational(CO_Data* d){(void)d;}
-void _operational(CO_Data* d){(void)d;}
+//void _operational(CO_Data* d){(void)d;}
 void _stopped(CO_Data* d){(void)d;}
