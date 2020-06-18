@@ -155,14 +155,12 @@ static void CAN_Filter_Config(void)
  */
 void CAN_Config(void)
 {
-  CAN_GPIO_Config();
-	//CAN_GPIOA_Config();
+  //CAN_GPIO_Config();
+	CAN_GPIOA_Config();
   CAN_NVIC_Config();
   CAN_Mode_Config();
   CAN_Filter_Config();   
 }
-
-
 
 /*
  * º¯ÊýÃû£ºCAN_SetMsg

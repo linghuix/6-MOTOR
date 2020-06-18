@@ -70,10 +70,10 @@ int knee_0_15m[19] = {-60 , -120 , -180 , -240 , -300 , -360 , -420 , -480 , -54
 int knee_1_15m[68] = {-4938 , -5595 , -6250 , -6906 , -7561 , -8218 , -8873 , -9529 , -10185 , -10841 , -11496 , -12152 , -12808 , -13464 , -14119 , -14775 , -15431 , -15827 , -15962 , -15773 , -15323 , -14549 , -13514 , -12155 , -10535 , -8591 , -6386 , -4082 , -1957 , -158 , 1382 , 2597 , 3551 , 4283 , 4938 , 5595 , 6250 , 6906 , 7561 , 8218 , 8873 , 9529 , 10185 , 10841 , 11496 , 12152 , 12808 , 13464 , 14119 , 14775 , 15431 , 15827 , 15962 , 15773 , 15323 , 14549 , 13514 , 12155 , 10535 , 8591 , 6386 , 4082 , 1957 , 158 , -1382 , -2597 , -3551 , -4283};
 
 
-Uint8 NODE_ID = 2;                          //EPOS的节点ID
+Uint8 NODE_ID2 = 2;                          //EPOS的节点ID
 Uint8 NODE_ID1 = 1;
 
-Epos Controller,Controller1;        //控制器对象
+Epos Controller2,Controller1;        //控制器对象
 
 // 描述  : "主机"的主函数 
 int main(void){
@@ -90,35 +90,38 @@ int main(void){
     printf("board init complete!\r\n");
     Epos_Delay(500);    
     
-  Epos_Init(&Controller,  NOT_USED, NODE_ID );      //初始化最大加速度，速度，跟踪误差，波特率1M/s，
-  //Epos_Init(&Controller1, NOT_USED, NODE_ID1);
+	Epos_Init(&Controller2,  NOT_USED, NODE_ID2);      //初始化最大加速度，速度，跟踪误差，波特率1M/s，
+	Epos_Init(&Controller1, NOT_USED, NODE_ID1);
+	
     printf("\r\ninitial EPOS done!\r\n\r\n");
     
     Epos_Delay(500);    
     
     //******** 模式设置 *******
-    Epos_setMode(&Controller, Position_Mode);
-    //Epos_setMode(&Controller1,Position_Mode);
+    Epos_setMode(&Controller2, Position_Mode);
+    Epos_setMode(&Controller1,Position_Mode);
     
     Epos_Delay(500);    
-    //SDO_Read(&Controller,OD_STATUS_WORD,0x00);            //Switched On    Status=0x0140 绿灯闪烁
-    //printf("\r\n%X\r\n",SDO_Read(&Controller,OD_STATUS_WORD,0x00));
+    //SDO_Read(&Controller2,OD_STATUS_WORD,0x00);            //Switched On    Status=0x0140 绿灯闪烁
+    //printf("\r\n%X\r\n",SDO_Read(&Controller2,OD_STATUS_WORD,0x00));
     printf("\r\nstatus\r\n");
     
-  //******** 使能EPOS *******
-    Epos_OperEn(&Controller);                                               //Switch On Disable to Operation Enable
-    //Epos_OperEn(&Controller1);
+    //******** 使能EPOS *******
+    Epos_OperEn(&Controller2);                                               //Switch On Disable to Operation Enable
+    Epos_OperEn(&Controller1);
 
     printf("\r\nenable EPOS\r\n\r\n");
     
     
     //******** EPOS复零位 *******
-    SDO_Write(&Controller, PM_SET_VALUE,0x00,0); //home position, 设为0
-    //SDO_Write(&Controller1,PM_SET_VALUE,0x00,-1217);
+    SDO_Write(&Controller2, PM_SET_VALUE,0x00,0); //home position, 设为0
+    SDO_Write(&Controller1,PM_SET_VALUE,0x00,0);
     
     printf("\r\nEPOS set 0 \r\n\r\n");
-    /*SDO_Write(&Controller, PM_SET_VALUE,0x00,10682); //home position, 设为0
-    SDO_Write(&Controller1,PM_SET_VALUE,0x00,10682);*/
+    /*
+	SDO_Write(&Controller2, PM_SET_VALUE,0x00,10682); //home position, 设为0
+    SDO_Write(&Controller1,PM_SET_VALUE,0x00,10682);
+	*/
     
 	Epos_Delay(2000); 
     
@@ -126,19 +129,19 @@ int main(void){
     //******** Read Angels *******
     printf("\r\nEPOS control beginning!\r\n\r\n");
 
-    /*NMT_Pre(&Controller, ALL);                        
-  SDO_Read(&Controller,OD_STATUS_WORD,0x00);            
+    /*NMT_Pre(&Controller2, ALL);                        
+	SDO_Read(&Controller2,OD_STATUS_WORD,0x00);            
 
-    PDO_Config(&Controller);
-    SDO_Read(&Controller,0x1400,0x01);
-    SDO_Read(&Controller,0x1600,0x00);
-    SDO_Read(&Controller,0x1600,0x01);
+    PDO_Config(&Controller2);
+    SDO_Read(&Controller2,0x1400,0x01);
+    SDO_Read(&Controller2,0x1600,0x00);
+    SDO_Read(&Controller2,0x1600,0x01);
 
-    NMT_Start(&Controller, ALL);
-    SDO_Read(&Controller,OD_STATUS_WORD,0x00);          //第九位为1   Status=0x0337 绿灯常量*/
+    NMT_Start(&Controller2, ALL);
+    SDO_Read(&Controller2,OD_STATUS_WORD,0x00);          //第九位为1   Status=0x0337 绿灯常量*/
     
 
-    //SDO_Write(&Controller, 0x206B, 0x00, 500);
+    //SDO_Write(&Controller2, 0x206B, 0x00, 500);
     //SDO_Write(&Controller1, 0x206B, 0x00, 1000);
     
     
@@ -148,9 +151,9 @@ int main(void){
         pos = (x>=323)? angle_2[x-323]:angle_1[x];
         //PDO_Write(201, pos);
         
-        angle_sensor = SDO_Read(&Controller,Pos_Demand_Value,0x00);
+        angle_sensor = SDO_Read(&Controller2,Pos_Demand_Value,0x00);
         
-        PM_SetAngle(&Controller, pos);
+        PM_SetAngle(&Controller2, pos);
         PM_SetAngle(&Controller1,pos);
         
         

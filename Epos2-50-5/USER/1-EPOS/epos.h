@@ -294,7 +294,7 @@ void Print(CanRxMsg RxMessage);//打印接收到的CAN帧
 
 //extern BOOL Epos_end_Read(Epos* epos, Uint32 *p_param, int fd1);
 
-extern void Epos_Init(Epos* epos1, Uint8 CAN_ID, Uint8 NODE_ID);
+extern void Epos_Init(Epos* epos1, Uint8 CAN_ID, Uint8 NODE_ID2);
 
 extern void Epos_ParamInit(Epos* epos);
 

@@ -39,12 +39,12 @@ void Epos_ParamInit(Epos* epos)
 *输入：EPOS结构体，CAN设备(节点)序号 CAN_ID，节点的ID：NODE_ID1，串口对象 fd1
 *功能：启动EPOS，并且设置最大的跟踪误差，最大的速度、加速度、负加速度，以及快速停止的负加速度设定
 */
-void Epos_Init(Epos* epos1, Uint8 CAN_ID, Uint8 NODE_ID)
+void Epos_Init(Epos* epos1, Uint8 CAN_ID, Uint8 NODE_ID2)
 {
     // EPOS结构体初始化
     epos1->b_init = 0;
     epos1->CAN_Handles = NULL;
-    epos1->node_ID = NODE_ID;               //节点ID设置
+    epos1->node_ID = NODE_ID2;               //节点ID设置
     
     epos1->b_init = 1;                      //EPOS 初始化标志
     epos1->cur_mode = MODE_NONE;            //控制模式
