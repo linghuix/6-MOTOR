@@ -1,0 +1,7 @@
+debug.c:26:9:addDebugBuffer	16	static
+debug.c:41:6:getDebugBuffer	16	static
+debug.c:60:5:_write	32	static
+stdio.h:214:5:fputc	16	static
+stdio.h:212:5:fgetc	16	static
+debug.c:116:6:debug_init	8	static
+debug.c:131:6:debug_IRQ	24	static
