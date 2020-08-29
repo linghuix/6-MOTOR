@@ -1,9 +1,0 @@
-Oscillators.c:28:6:show	40	static
-Oscillators.c:54:6:set	40	static
-Oscillators.c:95:6:Oscillators	88	static
-Oscillators.c:138:7:predict	48	static
-Oscillators.c:153:6:input	40	static
-Oscillators.c:173:6:test_Osc	768	static
-Oscillators.c:192:6:test_Pre	768	static
-Oscillators.c:240:9:Isequal	24	static
-Oscillators.c:249:7:switch_task	48	static

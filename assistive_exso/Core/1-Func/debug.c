@@ -4,8 +4,6 @@
 #include "debug.h"
 
 
-
-
 //G T R Vt
 
 //�������������.c�ļ������
@@ -55,8 +53,8 @@ char getDebugBuffer(void)
  * @brief : STM32CubeIDE printf 重定位到 PORT
  * Window > Preferences > C/C++ > Editor > Templates.
  */
-#ifdef __GNUC__
-#ifndef ITM_dbg
+#ifdef Cube
+#ifdef BUFF_Printf
 int _write(int file, char *ptr, int len)
 {
 	int DataIndex;
@@ -72,38 +70,49 @@ int _write(int file, char *ptr, int len)
 #endif
 
 
-//printf 重定向
-#ifdef __GNUC__		// Keil
+/*
+ * author lhx
+ * May 29, 2020
+ *
+ * @brief : 在 keil 中重定向 printf 与 scanf
+ * 	注意使用前需要开启microLib
+ * Window > Preferences > C/C++ > Editor > Templates.
+ */
+#define KEIL
+#define BUFF_Printf 
+#ifdef KEIL
+#ifdef BUFF_Printf
+int fputc(int ch, FILE * f)		// Keil
+{
+	addDebugBuffer(ch);
+	__HAL_UART_ENABLE_IT(&PORT, UART_IT_TXE);
+	return ch;
+}
 
-int fputc(int ch, FILE *f) 
-{             
-  while((USART1->SR&0X40)==0);//循环发送,直到发送完毕       
-        USART1->DR = (uint8_t) ch;             
-  return ch;
-} 
-
-#else				//stm32cube
-
-
+int fgetc(FILE * F)
+{
+    HAL_UART_Receive(&PORT,&ch_scanf,1,0xffff);//����
+    return ch_scanf;
+}
 #endif
 
 
-
-//scanf 重定向
-#ifdef __GNUC__		// STM32CubeIDE
-
+#ifdef NO_BUFF_Printf
+int fputc(int ch, FILE * f)		// Keil
+{
+	while((USART1->SR&0X40)==0);//循环发送,直到发送完毕
+		USART1->DR = (uint8_t) ch;
+	return ch;
+}
 
 int fgetc(FILE * F)		// Keil
 {
     HAL_UART_Receive(&PORT,&ch_scanf,1,0xffff);//����
     return ch_scanf;
 }
-
-#else
-
-
 #endif
 
+#endif
 /*
  * author lhx
  * May 13, 2020
@@ -116,6 +125,7 @@ int fgetc(FILE * F)		// Keil
 void debug_init(void)
 {
 	MX_USART1_UART_Init();
+	printf("debug initing ... \r\n");
 }
 
 /*
@@ -125,8 +135,6 @@ void debug_init(void)
  * @brief : 中断处理函数
  * Window > Preferences > C/C++ > Editor > Templates.
  */
-
-
 
 void debug_IRQ(void)
 {
@@ -161,7 +169,7 @@ void debug_IRQ(void)
   ******************************************************************************
   */
 //@@@@@@@@@@@@@T@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ test
-#ifdef TESTON
+
 	#include "main.h"
 
 	TEST test_SpeedOfBuffer_printf(void)
@@ -174,7 +182,7 @@ void debug_IRQ(void)
 		while(1){
 			i=50;
 			while(i--)
-				printf("%d , %ld - send buffer test for skipping error possibility and speeding: in-%d-out-%d\r\n",i,HAL_GetTick(),debugBuffer.in,debugBuffer.out);
+				printf("%d , %d - send buffer test for skipping error possibility and speeding: in-%d-out-%d\r\n",i,HAL_GetTick(),debugBuffer.in,debugBuffer.out);
 			printf("delay 2000ms\r\n");
 			i = 100000000;
 			while(i--);
@@ -198,7 +206,7 @@ void debug_IRQ(void)
 		/*scanf��printf*/
 		MSG("test scanf ... \r\nplease enter a num");
 		int x = 365;
-		scanf("%d",&x);
+	  scanf("%d",&x);
 		printf("receive : %d\r\n",x);
 
 		/*IT*/
@@ -214,7 +222,7 @@ void debug_IRQ(void)
 	void test_RXTX_callback(void)
 	{
 		static uint8_t msg[2];
-		for(int i=0; i<5; i++){
+		for(int i=0; i<2 ; i++){
 			msg[i] = test_buffRX[i];
 		}
 			HAL_UART_Transmit_IT(&huart1, msg, 2);
@@ -222,11 +230,10 @@ void debug_IRQ(void)
 	}
 	
 	
-	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-	{
-		if(huart->Instance==USART1){
-			test_RXTX_callback();
-		}
-	}
+//	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+//	{
+//		if(huart->Instance==USART1){
+//			test_RXTX_callback();
+//		}
+//	}
 
-#endif

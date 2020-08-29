@@ -18,6 +18,7 @@ void HC05_config(void);
 extern uint32_t inc;
 
 void HC05_send(uint8_t data[], uint8_t size);
+TEST test_HC05_communication(void);
 
 
 #endif /* 1_FUNC_FUNC_BLE_HC05_H_ */

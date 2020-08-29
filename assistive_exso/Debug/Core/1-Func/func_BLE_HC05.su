@@ -1,5 +1,0 @@
-func_BLE_HC05.c:9:6:HC05_Init	8	static
-func_BLE_HC05.c:15:6:HC05_config	24	static
-func_BLE_HC05.c:21:6:HC05_send	16	static
-func_BLE_HC05.c:27:6:HAL_TIM_PeriodElapsedCallback	16	static
-func_BLE_HC05.c:34:6:test_HC05_communication	16	static

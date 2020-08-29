@@ -1,5 +1,0 @@
-conf_global.c:9:6:SystemClock_Config	72	static
-conf_global.c:36:6:tick_init	16	static
-conf_global.c:49:6:NVIC_Init	8	static
-conf_global.c:75:6:Flash_prefetch	4	static
-conf_global.c:91:6:Core_Config	24	static

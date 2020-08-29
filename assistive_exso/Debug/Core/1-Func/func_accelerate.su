@@ -1,6 +1,0 @@
-func_accelerate.c:20:6:Acc1_Init	8	static
-func_accelerate.c:26:6:Acc2_Init	8	static
-func_accelerate.c:33:6:Acc2_Start	8	static
-func_accelerate.c:41:6:Acc1_Start	8	static
-func_accelerate.c:50:6:HAL_UART_RxCpltCallback	16	static
-func_accelerate.c:163:6:test_acc_communication	16	static

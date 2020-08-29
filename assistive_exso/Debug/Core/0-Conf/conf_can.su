@@ -1,8 +1,0 @@
-conf_can.c:18:6:CANHandle_Init	16	static
-conf_can.c:39:6:CAN_ITEnable	8	static
-conf_can.c:50:6:CAN_ITDISEnable	8	static
-conf_can.c:75:6:MX_CAN1_Init	16	static
-conf_can.c:82:6:MX_CAN1_Test_Init	16	static
-conf_can.c:98:6:HAL_CAN_MspInit	40	static
-conf_can.c:129:6:HAL_CAN_MspDeInit	16	static
-conf_can.c:155:6:CanFilter_Init	56	static

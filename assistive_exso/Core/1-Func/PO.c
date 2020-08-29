@@ -35,7 +35,7 @@ void th_algori(float ang, float w, float * k)
 		*k = 0.0;
 	}
 	else{
-		*k = 0.6;
+		*k = 1;
 	}
 	//printf("\r\nw=%.2f.&&&*k=%.2f\r\n",w,*k);
 }

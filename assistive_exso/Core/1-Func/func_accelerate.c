@@ -51,7 +51,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == USART1){
 		//HAL_UART_Receive_IT(&huart1, acc1, 6);
-		//HAL_UART_Transmit_IT(&huart1, acc1, 6);
+		HAL_UART_Transmit_IT(&huart1, test_data, 5);
 	}
 	if(huart->Instance == acc1_uart){
 	    //imu_2_flag = 1;

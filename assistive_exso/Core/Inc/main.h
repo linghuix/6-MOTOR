@@ -16,6 +16,9 @@ extern "C" {
 
 #include "PO.h"
 #include "AO.h"
+	
+	
+	#include "math.h"
 
 #ifdef __cplusplus
 }

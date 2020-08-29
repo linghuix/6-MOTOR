@@ -1,3 +1,0 @@
-conf_spi.c:13:6:MX_SPIx_Init	16	static
-conf_spi.c:35:6:HAL_SPI_MspInit	40	static
-conf_spi.c:63:6:SPIx_NVIC	16	static

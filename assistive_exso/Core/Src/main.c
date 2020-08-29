@@ -1,12 +1,13 @@
 
 #include "main.h"
-#include "math.h"
 
 
 int main(void)
 {
 	Core_Config();
 	Jlink_Init();
+	
+	//test_HC05_communication();
 
 	/*初始化*/
 	Acc1_Init();
@@ -15,12 +16,13 @@ int main(void)
 	AO_Init();
 	ECON_I_init();
 
-	/*启动外设*/
+
+//	/*启动外设*/
 	Acc1_Start();
 	Acc2_Start();
 	ECON_action();
-	
-	/*代码启动*/
+//	
+//	/*代码启动*/
 	float hip1_w, hip1_d, I1;
 	float hip2_w, hip2_d, I2;
 
@@ -33,6 +35,8 @@ int main(void)
 		if(flag_1 ==1&&flag_2 == 1&&flag_3 == 1){
 			flag_1=0;flag_2=0;flag_3=0;
 			hip1_d = angle1[1]/32768.0*180;	hip1_w = w1[2]/32768.0*2000;
+			hip1_d = angle1[1]/32768.0*180;	
+			hip1_d = angle1[1]/32768.0*180;	
 			/*I1 = PO(hip1_d,hip1_w, 1);
 			set_I_direction(1,I1);*/
 		}
@@ -47,32 +51,37 @@ int main(void)
 		
 		/*无线传输显示实时数据*/
 		if(inc % 10 == 0){
-			AO(hip1_d,1);
-			AO(hip2_d,2);
-			index++;
-			//printf("%d %.2f\t%.2f\t%.2f\t%.2f %.2f %.2f\r\n",inc, hip1_d,hip1_w,hip2_d,hip2_w,I1,I2);
-			/**/
-			assive_mode = switch_task( &hip1, hip1_d, hip1_w,1);
-			if(assive_mode == -20){
+			printf("acc1 %.2f\t%.2f\t",hip1_d,hip1_w);
+			printf("a2%.0f\t",angle1[2]/32768.0*180);
+			printf("a0%.0f\t",angle1[0]/32768.0*180);
+			printf("acc2 %.2f\t%.2f\t",hip2_d,hip2_w);
+			
+//			AO(hip1_d,1);
+//			AO(hip2_d,2);
+//			index ++;
+
+//			assive_mode = switch_task( &hip1, hip1_d, hip1_w,1);
+//			if(assive_mode == -20){
 				I1 = PO(hip1_d,hip1_w, 1);
-			}
-			else{
-				I1 = assive_torque(&hip1, hip1_d);
-			}
+//			}
+//			else{
+//				I1 = assive_torque(&hip1, hip1_d);
+//			}
 			set_I_direction(1,I1);
+			//printf("I1 %.2f\t",I1);
 			
 			/**/
-			assive_mode = switch_task( &hip2, hip2_d, hip2_w,2);
-			if(assive_mode == -20){
+//			assive_mode = switch_task( &hip2, hip2_d, hip2_w,2);
+//			if(assive_mode == -20){
 				I2 = PO(hip2_d,hip2_w, 2);
-			}
-			else{
-				I2 = assive_torque(&hip2, hip2_d);
-			}
+//			}
+//			else{
+//				I2 = assive_torque(&hip2, hip2_d);
+//			}
 			set_I_direction(2,I2);
 			
-			printf("%.1f\r\n",I1);
+			printf("I2 %.2f\r\n",I2);
 		}
   }
-  
+
 }
