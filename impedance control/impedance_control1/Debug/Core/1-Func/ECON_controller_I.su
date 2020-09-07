@@ -1,0 +1,6 @@
+ECON_controller_I.c:7:6:ECON_action	8	static
+ECON_controller_I.c:14:6:ECON_I_init	8	static
+ECON_controller_I.c:30:6:setPWM_1	24	static
+ECON_controller_I.c:36:6:setPWM_2	24	static
+ECON_controller_I.c:43:6:set_I_direction	40	static
+ECON_controller_I.c:89:6:test_ECON_I_controller	8	static

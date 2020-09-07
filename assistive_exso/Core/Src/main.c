@@ -50,12 +50,12 @@ int main(void)
 		}
 		
 		/*无线传输显示实时数据*/
-		if(inc % 10 == 0){
-			printf("acc1 %.2f\t%.2f\t",hip1_d,hip1_w);
-			printf("a2%.0f\t",angle1[2]/32768.0*180);
-			printf("a0%.0f\t",angle1[0]/32768.0*180);
-			printf("acc2 %.2f\t%.2f\t",hip2_d,hip2_w);
-			
+		if(inc % 30 == 0){
+//			printf("acc1 d %.2f\tw %.2f\t",hip1_d,hip1_w);
+//			printf("acc2 d %.2f\tw %.2f\t",hip2_d,hip2_w);
+			//printf("%d\t",inc);
+			printf("%.2f\t%.2f\t",hip1_d,hip1_w);
+			printf("%.2f\t%.2f\t",hip2_d,hip2_w);
 //			AO(hip1_d,1);
 //			AO(hip2_d,2);
 //			index ++;
@@ -68,7 +68,8 @@ int main(void)
 //				I1 = assive_torque(&hip1, hip1_d);
 //			}
 			set_I_direction(1,I1);
-			//printf("I1 %.2f\t",I1);
+//			printf("I1 %.2f\t",I1);
+			printf("%.2f\t",I1);
 			
 			/**/
 //			assive_mode = switch_task( &hip2, hip2_d, hip2_w,2);
@@ -80,7 +81,8 @@ int main(void)
 //			}
 			set_I_direction(2,I2);
 			
-			printf("I2 %.2f\r\n",I2);
+//			printf("I2 %.2f\r\n",I2);
+			printf("%.2f\r\n",I2);
 		}
   }
 

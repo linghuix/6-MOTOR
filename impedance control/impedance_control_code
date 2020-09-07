@@ -1,0 +1,102 @@
+
+1. 控制需要满足实时性，因此CAN缓冲区必须尽快清除，因此CANsend task不能使用 while 多次尝试发送，而是仅发一次，就抛弃
+
+2. 当前控制电机的指令是在PDO发送之后修改的，为满足控制目标值到电机执行的间隔时间最短，需要改到PDO发送前{_post_sync()中}
+
+3. 发送SYNC之后的RXPDO帧的接收时间其实并不确定，需要添加接收的时间戳，或者如何保证接收之后才计算控制U. 
+(接收传感器数据之后设为0，然后检测数据不为0才进行下一步U计算)
+
+```
+void _post_sync(CO_Data* d)
+{
+    (void)d;
+    SYNC_MSG("-post_sync-\r\n");
+    // waiting for sensor information
+    getMotorState()
+    assive(d);
+}
+```
+
+### sensor communciation  ###
+in  <-  NULL
+out ->  currenttheta: 当前时刻的电机角度
+        currenttheta_dot：当前时刻的电机角速度
+        currentforce：当前时刻的电机输出力矩
+
+# 电机传感器数据的读取
+Function getMotorState()
+    motormessage <- RXPDO CAN帧
+    currenttheta <- motormessage *360.0/4096.0/4.0
+    currenttheta_dot <- motormessage
+    return currenttheta, currenttheta_dot, currentforce
+
+----------------------------------------------
+
+### impedance control algorithm ###
+Input: theta_d: 目标的角度
+       theta_dot: 目标的角速度
+       theta_ddot：目标的角加速度
+       currenttheta：当前时刻的电机角度
+       currenttheta_dot：当前时刻的电机角速度
+       currentContactForce：当前与机械接触外力
+       
+out:   f_control: 实现阻抗控制的电机力矩控制输入
+
+M ,L ,J <- 0.5, 0.3, M*L^2/12           模型的物理参数
+Jm, Dm, Km <- J, 0.5, 1                 控制器的参数
+
+# 电机力矩控制输入 f_control 计算 
+Function CalForce_target()
+    f_control <- J*theta_ddot+J/Jm*Dm*(theta_dot-currenttheta_dot)+Km*(theta_d-currenttheta)+(J/Jm-1)*currentContactForce
+    return f_control
+
+
+----------------------------------------------
+
+### 电机 torque control algorithm ###
+Input: f_control: 实现阻抗控制的电机力矩控制输入
+       currentforce：当前时刻的电机输出力矩
+       
+out:   I_control: 实现力矩控制的电机电流控制输入
+
+{
+    float ref;
+    float fdb;              # 输入：系统待调节量的反馈值
+    float inte;//积分值
+    float err[2];
+    float kp,ki,kd; <- 0 0 0
+    float componentKp;
+    float componentKi;
+    float componentKd;
+    float componentKpMax; <- 15000
+    float componentKiMax; <- 15000
+    float componentKdMax; <- 15000
+    float output;
+    float outputMax; <- 8000 mA
+} PID_Regulator_t forceControlPID <- 0;   # PID控制器模型的物理参数
+
+# 计算力矩控制的输入电流
+Function CalI_target()
+    ref <- f_control
+    fdb <- currentforce
+    I_control <- PID_Calc(PID_Regulator_t)
+    return I_control
+
+# PID控制器输出计算
+Function PID_Calc(PID_Regulator_t)
+    err[0] <- err[1]            上一个控制周期的误差存储
+    err[1] <- ref-fdb           控制目标与实际值的误差计算
+    inte <- inte+err[1]
+    componentKp <- kp*err[1]
+    componentKi <- ki*inte
+    componentKp <- kd*(err[1]-err[0])
+    if abs(componentKp/i/d) > componentKp/i/dMax        限制最大值
+        componentKp/i/d = componentKp/i/dMax*sgn(componentKp/i/d)
+    end
+    output <- componentKp+componentKi+componentKdMax    限制最大值
+    if abs(output) > outputMax
+        output = outputMax*sgn(output)
+    end
+    return output
+    
+    

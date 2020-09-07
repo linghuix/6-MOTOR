@@ -25,7 +25,7 @@
 
 extern float abs(float x);
 
-#define D_area 1.0
+#define D_area 10.0
 #define W_area 1.0
 //阈值防抖动算法
 void th_algori(float ang, float w, float * k)
